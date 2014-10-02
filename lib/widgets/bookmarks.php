@@ -1,4 +1,14 @@
 <?php
+
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+use OCP\Config;
+use OCP\DB;
+use OCP\USER;
+
+
 /*
  * displays bookmarks from Bookmarks-App by ownCloud
  * copyright 2014
@@ -8,7 +18,7 @@
  * @author Florian Steffens (flost@live.no)
  * @author Simeon Ackermann (amseon@web.de)
  */
-class bookmarks extends ocdWidget implements interfaceWidget {
+class bookmarks extends Widget implements interfaceWidget {
 
     private $bookmarks = Array();
 
@@ -32,11 +42,11 @@ class bookmarks extends ocdWidget implements interfaceWidget {
      * gets bookmarks
     */
     private function getBookmarks () {
-        $filters = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_bookmarks_tags", ""); // default value doesnt work if empty
+        $filters = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_bookmarks_tags", ""); // default value doesnt work if empty
         if ( empty($filters) ) $filters = $this->getDefaultValue("tags");
         $filters = explode(',', $filters);
 
-        $params=array(OCP\USER::getUser());
+        $params=array(USER::getUser());
 
         $sql = "SELECT *, (SELECT GROUP_CONCAT(`tag`) from `*PREFIX*bookmarks_tags` WHERE `bookmark_id` = `b`.`id`) as `tags`
 				FROM `*PREFIX*bookmarks` `b`
@@ -50,7 +60,7 @@ class bookmarks extends ocdWidget implements interfaceWidget {
 
         $sql .= " ORDER BY lastmodified DESC ";
 
-        $query = OCP\DB::prepare($sql);
+        $query = DB::prepare($sql);
         $results = $query->execute($params)->fetchAll();
 
         $this->bookmarks = $results;

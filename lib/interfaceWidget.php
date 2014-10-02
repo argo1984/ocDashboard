@@ -1,5 +1,8 @@
 <?php
 
+namespace OCA\ocDashboard;
+
+
 /*
  * every widget has to implement this interface
  */

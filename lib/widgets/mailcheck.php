@@ -1,5 +1,12 @@
 <?php
 
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+use OCP\Config;
+
+
 /*
  * check for new mails
  * copyright 2013
@@ -8,7 +15,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-class mailcheck extends ocdWidget implements interfaceWidget {
+class mailcheck extends Widget implements interfaceWidget {
 
 	private $maxStrLenReference = 23; // character
 	private $maxStrLenFrom = 18; // character
@@ -66,13 +73,13 @@ class mailcheck extends ocdWidget implements interfaceWidget {
 	 * @return alls new mails, newest first
 	 */
 	private function getNewMails() {
-		$user = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_user","");
-		$host = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_server","");
-		$pass = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_password","");
-		$port = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_port",$this->getDefaultValue("port"));
-		//$folder = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_folder",$this->getDefaultValue("folder"));
-		$security = (OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_ssl")=='yes')? "ssl": "none";
-		$protocol = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_protocol",$this->getDefaultValue("protocol"));
+		$user = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_user","");
+		$host = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_server","");
+		$pass = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_password","");
+		$port = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_port",$this->getDefaultValue("port"));
+		//$folder = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_folder",$this->getDefaultValue("folder"));
+		$security = (Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_ssl")=='yes')? "ssl": "none";
+		$protocol = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_mailcheck_protocol",$this->getDefaultValue("protocol"));
 		
 		if($host != "" && $user != "" && $pass != "") {
 			// connect to mailbox

@@ -1,6 +1,8 @@
 <?php
 
-class ocdWidgets {
+namespace OCA\ocDashboard;
+
+class Widgets {
 	
 		/* all availible widgets
 		* 
@@ -147,7 +149,7 @@ class ocdWidgets {
 		 * @return widgetArray
 		 */
 		public static function getWidgetConfigById ($id) {
-			foreach (ocdWidgets::$widgets as $w) {
+			foreach (Widgets::$widgets as $w) {
 				if($w['id'] == $id) {
 					return $w;
 				}

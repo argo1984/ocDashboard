@@ -1,6 +1,10 @@
 <?php
 
-class ocdFactory {
+namespace OCA\ocDashboard;
+
+use OC;
+
+class Factory {
 	
 	/*
 	 * get a instance of a widget
@@ -8,7 +12,7 @@ class ocdFactory {
 	 * @return complete html for widget
 	 */
 	static function getWidget($widgetConf) {
-		$id = $widgetConf['id'];
+		$id = '\OCA\ocDashboard\lib\widgets\\'.$widgetConf['id'];
 		OC::$CLASSPATH['ocdWidget'] = 'ocDashboard/lib/widget.php'; //load superclass
 		OC::$CLASSPATH['interfaceWidget'] = 'ocDashboard/lib/interfaceWidget.php'; //load interface for widget
 		OC::$CLASSPATH[$id] = 'ocDashboard/lib/widgets/'.$id.'.php'; // load widget class

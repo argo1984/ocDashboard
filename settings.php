@@ -1,30 +1,39 @@
 <?php
 
-\OCP\User::checkLoggedIn();
-\OCP\App::checkAppEnabled('ocDashboard');
+namespace OCA\ocDashboard;
 
-\OCP\Util::addscript('ocDashboard', 'settings');
-OCP\Util::addstyle('ocDashboard', 'ocDashboardSettings');
+use OC;
+use OCP\App;
+use OCP\Config;
+use OCP\Template;
+use OCP\User;
+use OCP\Util;
 
-$user = OCP\User::getUser();
+User::checkLoggedIn();
+App::checkAppEnabled('ocDashboard');
 
-$tmpl = new OCP\Template('ocDashboard', 'settings');
+Util::addscript('ocDashboard', 'settings');
+Util::addstyle('ocDashboard', 'ocDashboardSettings');
+
+$user = User::getUser();
+
+$tmpl = new Template('ocDashboard', 'settings');
 
 
 $w = Array();
 OC::$CLASSPATH['ocdWidgets'] = 'ocDashboard/appinfo/widgetConfigs.php';
 OC::$CLASSPATH['ocdFactory'] = 'ocDashboard/lib/factory.php';
 
-foreach (ocdWidgets::$widgets as $widget) {
+foreach (Widgets::$widgets as $widget) {
 	$confs = json_decode($widget['conf'], true);
 	if(isset($confs) && !empty($confs)) {
 		foreach ($confs as $k => $config) {
 			if( $config['type'] != 'password') {
-				$confs[$k]['value'] = OCP\Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']."_".$config['id'],"");
+				$confs[$k]['value'] = Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']."_".$config['id'],"");
 			}
 		}
 	}				
-	$enable = OCP\Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']);
+	$enable = Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']);
 	$w[] = Array( "widget" => $widget, "enable" => $enable, "conf" => $confs);
 }
 

@@ -1,30 +1,36 @@
 <?php
 
-// Look up other security checks in the docs!
-\OCP\User::checkLoggedIn();
-\OCP\App::checkAppEnabled('ocDashboard');
-\OCP\App::setActiveNavigationEntry( 'ocDashboard' );
+namespace OCA\ocDashboard;
 
-OCP\Util::addscript('ocDashboard', 'ocDashboard');
-OCP\Util::addscript('ocDashboard', 'ajaxService');
-OCP\Util::addStyle('ocDashboard', 'ocDashboard');
+use OC;
+use OC_L10N;
+use OCP\App;
+use OCP\Config;
+use OCP\Template;
+use OCP\User;
+use OCP\Util;
 
-$user = OCP\User::getUser();
+User::checkLoggedIn();
+App::checkAppEnabled('ocDashboard');
+App::setActiveNavigationEntry( 'ocDashboard' );
+
+Util::addscript('ocDashboard', 'ocDashboard');
+Util::addscript('ocDashboard', 'ajaxService');
+Util::addStyle('ocDashboard', 'ocDashboard');
+
+$user = User::getUser();
 
 $w = Array();
-OC::$CLASSPATH['ocdWidgets'] = 'ocDashboard/appinfo/widgetConfigs.php';
-OC::$CLASSPATH['ocdFactory'] = 'ocDashboard/lib/factory.php';
-
-foreach (ocdWidgets::$widgets as $widget) {
+foreach (Widgets::$widgets as $widget) {
 	// if widget is enabled
-	if (OCP\Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']) == "yes") {
-		$w[] = ocdFactory::getWidget($widget)->getData();
+	if (Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']) == "yes") {
+		$w[] = Factory::getWidget($widget)->getData();
 	}
 }
 
 //if all deactivated
 if(empty($w)) {
-	$l=new OC_L10N('ocDashboard');
+	$l = new OC_L10N('ocDashboard');
 	$w[0]['error'] = "You can configure this site in your personal settings.";
 	$w[0]['id'] = "none";
 	$w[0]['name'] = "";
@@ -33,6 +39,6 @@ if(empty($w)) {
 	$w[0]['icon'] = "";
 }
 
-$tpl = new OCP\Template("ocDashboard", "main", "user");
+$tpl = new Template("ocDashboard", "main", "user");
 $tpl->assign('widgets', $w);
 $tpl->printPage();

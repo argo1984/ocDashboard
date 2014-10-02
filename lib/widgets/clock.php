@@ -1,4 +1,11 @@
 <?php
+
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+
+
 /*
  * analog clock by javascript
  * copyright 2013
@@ -11,7 +18,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-class clock extends ocdWidget implements interfaceWidget {
+class clock extends Widget implements interfaceWidget {
 
 
 	// ======== INTERFACE METHODS ================================

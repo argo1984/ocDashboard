@@ -1,5 +1,13 @@
 <?php
 
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+use OCP\Config;
+use OCP\Util;
+
+
 /*
  * shows weatherinformation from yahoo weather
  * copyright 2013
@@ -12,7 +20,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-class weather extends ocdWidget implements interfaceWidget {
+class weather extends Widget implements interfaceWidget {
 	private $cityUrl = "http://weather.yahooapis.com/forecastrss?w=###code###&u=###unit###";
 	private $luftdruckZeichen = Array("&rarr;","&uarr;","&darr;");
 	private $xml;
@@ -65,12 +73,12 @@ class weather extends ocdWidget implements interfaceWidget {
 	private function getXml() {
 	
 		$code = "";
-		$code = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_weather_city");
+		$code = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_weather_city");
 		if (!isset($code) || $code == "" || !is_numeric($code)) {
 			$this->errorMsg = "The city code is not valid.";
 			return false;
 		} else {
-			$unit = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_weather_unit",$this->getDefaultValue('unit'));
+			$unit = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_weather_unit",$this->getDefaultValue('unit'));
 			
 			$url = $this->cityUrl;
 			$url = str_replace("###unit###", $unit, $url);
@@ -81,7 +89,7 @@ class weather extends ocdWidget implements interfaceWidget {
 				$this->xml = new SimpleXMLElement($con);
 				return true;
 			} else {
-				OCP\Util::writeLog('ocDashboard',"Weather coul not load: ".$url, \OCP\Util::WARN);
+				Util::writeLog('ocDashboard',"Weather coul not load: ".$url, Util::WARN);
 				$this->errorMsg = "The city code is not valid.";
 				return false;
 			}

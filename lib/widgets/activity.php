@@ -1,4 +1,11 @@
 <?php
+
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+
+
 /*
  * displays activitys from owncloud activity app by ownCloud
  * copyright 2013
@@ -7,7 +14,7 @@
  * @date 18-03-2014
  * @author Florian Steffens (flost@live.no)
  */
-class activity extends ocdWidget implements interfaceWidget {
+class activity extends Widget implements interfaceWidget {
 
 	// ======== INTERFACE METHODS ================================
 	

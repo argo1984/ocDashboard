@@ -1,5 +1,13 @@
 <?php
 
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\News\Db\FeedType;
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+use OCP\Config;
+
+
 /*
  * displays new from newsreader by ownCLoud
  * copyright 2013
@@ -8,9 +16,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-
-
-class newsreader extends ocdWidget implements interfaceWidget {
+class newsreader extends Widget implements interfaceWidget {
 
     private $itembusinesslayer;
 
@@ -44,7 +50,7 @@ class newsreader extends ocdWidget implements interfaceWidget {
             $this->getNewsapi();
         }
 
-        $id = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId");
+        $id = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId");
         $this->itembusinesslayer->read($id, true, $this->user);
 
 		return true;
@@ -61,9 +67,9 @@ class newsreader extends ocdWidget implements interfaceWidget {
             $this->getNewsapi();
         }
 
-        $lastId = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId",0);
+        $lastId = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId",0);
 
-        $items = $this->itembusinesslayer->findAllNew(0, \OCA\News\Db\FeedType::SUBSCRIPTIONS , 0, false,  $this->user);
+        $items = $this->itembusinesslayer->findAllNew(0, FeedType::SUBSCRIPTIONS , 0, false,  $this->user);
         $items = array_reverse($items);
 
         $newsitemfound = false;
@@ -74,7 +80,7 @@ class newsreader extends ocdWidget implements interfaceWidget {
 
             // if the last newsitem was the las showen item => this is the next
             if($newsitemfound) {
-                OCP\Config::setUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId", $itemdata['id']);
+                Config::setUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId", $itemdata['id']);
                 $itemdata["count"] = count($items);
                 $itemdata["actual"] = $itemcount;
                 return $itemdata;
@@ -88,7 +94,7 @@ class newsreader extends ocdWidget implements interfaceWidget {
 
         if(reset($items)) {
             $itemdata = reset($items)->toAPI();
-            OCP\Config::setUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId", $itemdata['id']);
+            Config::setUserValue($this->user, "ocDashboard", "ocDashboard_newsreader_lastItemId", $itemdata['id']);
             $itemdata["count"] = count($items);
             $itemdata["actual"] = 1;
             return $itemdata;
@@ -98,7 +104,10 @@ class newsreader extends ocdWidget implements interfaceWidget {
     }
 
     private function getNewsapi() {
-        $app = new \OCA\News\App\News();
+        $t = $this->_helper->isLowerThanVersion(6);
+
+
+        $app = new \OCA\News\AppInfo\Application();
         $container = $app->getContainer();
         $this->itembusinesslayer = $container->query('ItemBusinessLayer');
     }

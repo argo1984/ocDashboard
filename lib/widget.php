@@ -1,5 +1,8 @@
 <?php
 
+
+namespace OCA\ocDashboard;
+
 /*
  * super class for all widgets
  * generel methods
@@ -7,7 +10,11 @@
  * @author Florian Steffens
  * 
  */
-class ocdWidget {
+use OC_L10N;
+use OCP\User;
+use OCP\Util;
+
+class Widget {
 	
 	protected $id = "";
 	protected $name = "";
@@ -22,12 +29,14 @@ class ocdWidget {
 	protected $cond;
 	protected $scripts;
 	protected $styles;
+
+    protected $_helper;
 	
 	function __construct($widgetConf) {
 		$this->id = $widgetConf['id'];
 		$this->name = $widgetConf['name'];
 		$this->l = OC_L10N::get('ocDashboard');
-		$this->user = OCP\User::getUser();
+		$this->user = User::getUser();
 		$this->conf = json_decode($widgetConf['conf'], true);
 		$this->status = 0;
 		$this->errorMsg = "";
@@ -42,6 +51,8 @@ class ocdWidget {
 
         //print_r(Array(OC_App::getAppPath('ocDashboard')."/l10n/widgets/".$this->id."/".OC_L10N::findLanguage().".php"));
         //$this->l->load("");
+
+        $this->_helper = new helper();
 	}
 	
 	
@@ -86,7 +97,7 @@ class ocdWidget {
 		if(isset($this->scripts) && $this->scripts != "") {
 			foreach (explode(",", $this->scripts) as $script) {
                 if($script != "") {
-    				OCP\Util::addscript('ocDashboard', 'widgets/'.$this->id.'/'.$script);
+    				Util::addscript('ocDashboard', 'widgets/'.$this->id.'/'.$script);
                 }
 			}
 		}
@@ -100,7 +111,7 @@ class ocdWidget {
 		if(isset($this->styles) && $this->styles != "") {
 			foreach (explode(",", $this->styles) as $style) {
                 if($style != "") {
-    				OCP\Util::addStyle('ocDashboard', 'widgets/'.$this->id.'/'.$style);
+    				Util::addStyle('ocDashboard', 'widgets/'.$this->id.'/'.$style);
                 }
             }
 		}
@@ -138,8 +149,8 @@ class ocdWidget {
 		$result = $query->execute($params);
 			
 		if (\OCP\DB::isError($result)) {
-			\OCP\Util::writeLog('ocDashboard',"Could not clean hashs.", \OCP\Util::WARN);
-			\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
+			Util::writeLog('ocDashboard',"Could not clean hashs.", Util::WARN);
+			Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
 		}
 	}
 	
@@ -170,8 +181,8 @@ class ocdWidget {
 			$query2 = \OCP\DB::prepare($sql2);
 			$result2 = $query2->execute($params);
 			if (\OCP\DB::isError($result2)) {
-				\OCP\Util::writeLog('ocDashboard',"Could not write hash to db.", \OCP\Util::WARN);
-				\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
+				Util::writeLog('ocDashboard',"Could not write hash to db.", Util::WARN);
+				Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
 			}
 		}
 	}
@@ -207,7 +218,7 @@ class ocdWidget {
 		if(isset($this->cond) && $this->cond != "") {
 			foreach(explode(",",$this->cond) as $cond) {
 				if(\OCP\App::isEnabled($cond) != 1) {
-					OCP\Util::writeLog('ocDashboard',"App ".$cond." missing for ".$this->name, \OCP\Util::WARN);
+					\OCP\Util::writeLog('ocDashboard',"App ".$cond." missing for ".$this->name, Util::WARN);
 					return false;
 				}
 			}

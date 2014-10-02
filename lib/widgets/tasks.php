@@ -1,4 +1,12 @@
 <?php
+
+namespace OCA\ocDashboard\lib\widgets;
+
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+
+
+
 /*
  * displays tasks from Taskapp by ownCloud
  * copyright 2013
@@ -7,9 +15,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-
-
-class tasks extends ocdWidget implements interfaceWidget {
+class tasks extends Widget implements interfaceWidget {
 
 
 	// ======== INTERFACE METHODS ================================

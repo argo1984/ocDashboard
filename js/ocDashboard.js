@@ -22,7 +22,7 @@ $(document).ready(function() {
 
     /* Make all dashboard Items dragable / resizable. In the weekend i will look for saving positions / size */
     //$('.dashboardItem').draggable().resizable();
-    $('.dashboardItem').draggable();
+    //$('.dashboardItem').draggable();
 });
 
 

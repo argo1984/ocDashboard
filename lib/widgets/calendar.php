@@ -1,4 +1,13 @@
 <?php
+
+namespace OCA\ocDashboard\lib\widgets;
+
+use OC_L10N;
+use OCA\ocDashboard\interfaceWidget;
+use OCA\ocDashboard\Widget;
+use OCP\Config;
+
+
 /*
  * shows the next meetings from the cownCloud calender app
  * copyright 2013
@@ -7,7 +16,7 @@
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
-class calendar extends ocdWidget implements interfaceWidget {
+class calendar extends Widget implements interfaceWidget {
 	
 	private $events = Array();
 	private $numEvents = 20; // max number of showen events
@@ -23,7 +32,7 @@ class calendar extends ocdWidget implements interfaceWidget {
 	public function getWidgetData() {
 		$return = Array();
 		$temp = Array();
-		$this->timezoneAdd = OCP\Config::getUserValue($this->user, "ocDashboard", "ocDashboard_calendar_timezoneAdd",0);
+		$this->timezoneAdd = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_calendar_timezoneAdd",0);
 		$this->prepareEvents();
 						
 		$now = false;
