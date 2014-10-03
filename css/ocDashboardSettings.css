@@ -55,3 +55,17 @@
 	font-weight: normal;
 	padding: 10px;
 }
+
+
+/* COLORS */
+.colorGreen {
+    color: darkgreen;
+}
+
+.colorRed {
+    color: darkred;
+}
+
+.colorOrange {
+    color: orange;
+}

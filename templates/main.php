@@ -25,7 +25,7 @@
 		} ?>
 
 		
-		<div class="dashboardItem<?php print_unescaped($last); ?>" id="<?php print_unescaped($widget['id']); ?>" style="display: none; <?php print_unescaped($style); ?>"  data-interval="<?php print_unescaped($widget['interval']); ?>" data-status="<?php print_unescaped($widget['status']); ?>">
+		<div class="ocDashboardWidget dashboardItem<?php print_unescaped($last); ?>" id="<?php print_unescaped($widget['id']); ?>" style="display: none; <?php print_unescaped($style); ?>"  data-interval="<?php print_unescaped($widget['interval']); ?>" data-status="<?php print_unescaped($widget['status']); ?>">
 		
 		<?php 
 			// for single widget output --------------------------------------------------------------------------

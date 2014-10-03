@@ -191,3 +191,7 @@
 #ocDashboard .lastItem {
     margin-bottom: 40px;
 }
+
+#ocDashboard .hoverInfo {
+    visibility: hidden;
+}

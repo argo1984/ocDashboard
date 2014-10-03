@@ -76,6 +76,7 @@
 							<?php
 							break;
 					}
+                    print_unescaped('<br><br>');
 	
 				} 
 			} ?>
@@ -83,7 +84,7 @@
     		</div>
     	<?php
 		}
-		print_unescaped($l->t('<p style="padding-top: 20px;">There are some background colors for the widgets.<ul><li>red: Error</li><li>orange: missconfiguration</li><li>green: there is something new</li><li></li></ul></p>'));
+		print_unescaped($l->t('<p style="padding-top: 20px;">There are some background colors for the widgets.<ul><li class="colorRed">red: Error</li><li class="colorOrange">orange: missconfiguration</li><li class="colorGreen">green: there is something new</li><li></li></ul></p>'));
 	?>
 	
 	</fieldset> 

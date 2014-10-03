@@ -16,7 +16,6 @@ App::checkAppEnabled('ocDashboard');
 App::setActiveNavigationEntry( 'ocDashboard' );
 
 Util::addscript('ocDashboard', 'ocDashboard');
-Util::addscript('ocDashboard', 'ajaxService');
 Util::addStyle('ocDashboard', 'ocDashboard');
 
 $user = User::getUser();

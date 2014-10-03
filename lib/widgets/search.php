@@ -20,7 +20,7 @@ use OCP\Config;
  * @author Florian Steffens (flost@live.no)
  */
 class search extends Widget implements interfaceWidget {
-    private $searchEngines = Array("Google","Yahoo","Bing","DuckDuckGo","Ask","eBay","Amazon");
+    private $searchEngines = Array("Google","Yahoo","Bing","DuckDuckGo","Ask","eBay","Amazon","Youtube");
 
 	// ======== INTERFACE METHODS ================================
 

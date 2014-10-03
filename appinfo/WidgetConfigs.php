@@ -36,12 +36,13 @@ class WidgetConfigs {
                                 'id' 		=>	"clock",
                                 'name'		=>	"Clock",
                                 'refresh'	=>	0,
-                                'icon'		=>	"",
+                                'icon'		=>	"icons/5.png",
                                 'conf'		=>	"",
                                 'cond' 		=>	"",
                                 'scripts'	=>	"coolclock,ocClockSkin,excanvas",
                                 'styles'	=>	"",
-                                'link'		=>	""
+                                'link'		=>	"",
+                                'commercial'=>  false
 								),
 							Array(
                                 'id' 		=>	"calendar",
@@ -52,7 +53,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"calendar",
                                 'scripts'	=>	"",
                                 'styles'	=>	"",
-                                'link'		=>	"index.php/apps/calendar/"
+                                'link'		=>	"index.php/apps/calendar/",
+                                'commercial'=>  true
 							),
 							Array(
                                 'id' 		=>	"weather",
@@ -63,7 +65,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"",
                                 'scripts'	=>	"",
                                 'styles'	=>	"",
-                                'link'		=>	""
+                                'link'		=>	"",
+                                'commercial'=>  false
 								),
 							Array(
                                 'id' 		=>	"tasks",
@@ -74,7 +77,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"tasks_enhanced",
                                 'scripts'	=>	"tasks",
                                 'styles'	=>	"tasks",
-                                'link'		=>	"index.php/apps/tasks_enhanced/"
+                                'link'		=>	"index.php/apps/tasks_enhanced/",
+                                'commercial'=>  true
 								),
 							Array(
                                 'id' 		=>	"mailcheck",
@@ -85,7 +89,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"",
                                 'scripts'	=>	"",
                                 'styles'	=>	"",
-                                'link'		=>	"index.php/apps/roundcube"
+                                'link'		=>	"index.php/apps/roundcube",
+                                'commercial'=>  true
 							),
                             Array(
                                 'id' 		=>	"newsreader",
@@ -96,7 +101,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"news",
                                 'scripts'	=>	"newsreader",
                                 'styles'	=>	"",
-                                'link'		=>	"index.php/apps/news/"
+                                'link'		=>	"index.php/apps/news/",
+                                'commercial'=>  true
                             ),
 							Array(
                                 'id' 		=>	"activity",
@@ -107,7 +113,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"activity",
                                 'scripts'	=>	"",
                                 'styles'	=>	"activity",
-                                'link'		=>	"index.php/apps/activity/"
+                                'link'		=>	"index.php/apps/activity/",
+                                'commercial'=>  true
                             ),
                             Array(
                                 'id' 		=>	"bookmarks",
@@ -118,7 +125,8 @@ class WidgetConfigs {
                                 'cond' 		=>	"bookmarks",
                                 'scripts'	=>	"",
                                 'styles'	=>	"bookmarks",
-                                'link'		=>	"index.php/apps/bookmarks"
+                                'link'		=>	"index.php/apps/bookmarks",
+                                'commercial'=>  true
                             ),
                             Array(
                                 'id' 		=>	"openweather",
@@ -129,18 +137,20 @@ class WidgetConfigs {
                                 'cond' 		=>	"",
                                 'scripts'	=>	"",
                                 'styles'	=>	"openweather",
-                                'link'		=>	"http://openweathermap.org"
+                                'link'		=>	"http://openweathermap.org",
+                                'commercial'=>  true
                             ),
                             Array(
                                 'id' 		=>	"search",
                                 'name'		=>	"Search",
                                 'refresh'	=>	0,
                                 'icon'		=>	"icons/12.png",
-                                'conf'		=>	'[{"name":"Default Search Engine","type":"select","id":"defaultSearchEngine","default":"0","options":[{"id":"0","name":"Google"},{"id":"1","name":"Yahoo"},{"id":"2","name":"Bing"},{"id":"3","name":"DuckDuckGo"},{"id":"4","name":"Ask"},{"id":"5","name":"eBay"},{"id":"6","name":"Amazon"}]},{"name":"Search Engine Language","type":"select","id":"defaultSearchEngineLanguage","default":"0","options":[{"id":"0","name":"English"},{"id":"1","name":"German"}]}]',
+                                'conf'		=>	'[{"name":"Default Search Engine","type":"select","id":"defaultSearchEngine","default":"0","options":[{"id":"0","name":"Google"},{"id":"1","name":"Yahoo"},{"id":"2","name":"Bing"},{"id":"3","name":"DuckDuckGo"},{"id":"4","name":"Ask"},{"id":"5","name":"eBay"},{"id":"6","name":"Amazon"},{"id":"7","name":"Youtube"}]},{"name":"Search Engine Language","type":"select","id":"defaultSearchEngineLanguage","default":"0","options":[{"id":"0","name":"English"},{"id":"1","name":"German"}]}]',
                                 'cond' 		=>	"",
                                 'scripts'	=>	"search",
                                 'styles'	=>	"search",
-                                'link'		=>	""
+                                'link'		=>	"",
+                                'commercial'=>  true
                             )
 					  );
 		
