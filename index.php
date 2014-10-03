@@ -4,6 +4,7 @@ namespace OCA\ocDashboard;
 
 use OC;
 use OC_L10N;
+use OCA\ocDashboard\Appinfo\WidgetConfigs;
 use OCP\App;
 use OCP\Config;
 use OCP\Template;
@@ -21,7 +22,7 @@ Util::addStyle('ocDashboard', 'ocDashboard');
 $user = User::getUser();
 
 $w = Array();
-foreach (Widgets::$widgets as $widget) {
+foreach (WidgetConfigs::$widgets as $widget) {
 	// if widget is enabled
 	if (Config::getUserValue($user, "ocDashboard", "ocDashboard_".$widget['id']) == "yes") {
 		$w[] = Factory::getWidget($widget)->getData();

@@ -1,8 +1,8 @@
 <?php
 
-namespace OCA\ocDashboard;
+namespace OCA\ocDashboard\Appinfo;
 
-class Widgets {
+class WidgetConfigs {
 	
 		/* all availible widgets
 		* 
