@@ -149,7 +149,7 @@ class WidgetConfigs {
 		 * @return widgetArray
 		 */
 		public static function getWidgetConfigById ($id) {
-			foreach (Widgets::$widgets as $w) {
+			foreach (WidgetConfigs::$widgets as $w) {
 				if($w['id'] == $id) {
 					return $w;
 				}

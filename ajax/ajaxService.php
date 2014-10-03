@@ -3,8 +3,8 @@
 namespace OCA\ocDashboard\Ajax;
 
 use OC;
+use OCA\ocDashboard\Appinfo\WidgetConfigs;
 use OCA\ocDashboard\Factory;
-use OCA\ocDashboard\Widgets;
 use OCP\App;
 use OCP\Config;
 use OCP\JSON;
@@ -36,7 +36,7 @@ $RESPONSE["debug"] =    "user: ".$user." | ".
 
 // if widget is enabled
 if ($widgetEnabled) {
-	$widgetConf = Widgets::getWidgetConfigById($id);
+	$widgetConf = WidgetConfigs::getWidgetConfigById($id);
 	$widget = Factory::getWidget($widgetConf);
 	$result = "";
 	if (method_exists($widget, $method)) {

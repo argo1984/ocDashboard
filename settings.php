@@ -3,6 +3,7 @@
 namespace OCA\ocDashboard;
 
 use OC;
+use OCA\ocDashboard\Appinfo\WidgetConfigs;
 use OCP\App;
 use OCP\Config;
 use OCP\Template;
@@ -24,7 +25,7 @@ $w = Array();
 OC::$CLASSPATH['ocdWidgets'] = 'ocDashboard/appinfo/widgetConfigs.php';
 OC::$CLASSPATH['ocdFactory'] = 'ocDashboard/lib/factory.php';
 
-foreach (Widgets::$widgets as $widget) {
+foreach (WidgetConfigs::$widgets as $widget) {
 	$confs = json_decode($widget['conf'], true);
 	if(isset($confs) && !empty($confs)) {
 		foreach ($confs as $k => $config) {

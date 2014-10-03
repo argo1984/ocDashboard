@@ -4,7 +4,7 @@ namespace OCA\ocDashboard\Ajax;
 
 use OC;
 use OCA\ocDashboard\Factory;
-use OCA\ocDashboard\Widgets;
+use OCA\ocDashboard\appinfo\WidgetConfigs;
 use OCP\App;
 use OCP\Config;
 use OCP\JSON;
@@ -19,7 +19,7 @@ OC::$CLASSPATH['ocdWidgets'] = 'ocDashboard/appinfo/widgetConfigs.php';
 $id = str_replace(array('/', '\\'), '',  $_GET['widget']);
 $user = User::getUser();
 
-$widgetArray = Widgets::getWidgetConfigById($id);
+$widgetArray = WidgetConfigs::getWidgetConfigById($id);
 
 OC::$CLASSPATH['ocdFactory'] = 'ocDashboard/lib/factory.php';
 
