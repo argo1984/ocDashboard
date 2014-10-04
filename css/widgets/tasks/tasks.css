@@ -1,21 +1,16 @@
-.task.calendar {
-    font-weight: bold;
-    padding-top: 10px;
-    clear: both;
+.app-ocDashboard .widget.tasks .content .newTask {
+    display:           none;
+    padding: 20px;
 }
 
-.newtask {
-    display: none;
+.app-ocDashboard .widget.tasks .content .addTask {
+    padding:           10px;
 }
 
-#addTask {
-    position: relative;
-    top: -209px;
-    width: 22px;
-    left: 250px;
-    font-size: 1.7em;
+.app-ocDashboard .widget.tasks .content .tasks span {
+    color: gray;
 }
-
-#addTask:hover {
+.app-ocDashboard .widget.tasks .content .tasks span:hover {
+    color: black;
     cursor: pointer;
 }

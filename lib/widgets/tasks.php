@@ -4,7 +4,7 @@ namespace OCA\ocDashboard\lib\widgets;
 
 use OCA\ocDashboard\interfaceWidget;
 use OCA\ocDashboard\Widget;
-
+use OCA\Tasks_enhanced\Dispatcher;
 
 
 /*
@@ -38,7 +38,7 @@ class tasks extends Widget implements interfaceWidget {
 
     private function getCalendars() {
         $calendars = Array();
-        foreach( OC_Calendar_Calendar::allCalendars($this->user, true) as $cal ) {
+        foreach( \OC_Calendar_Calendar::allCalendars($this->user, true) as $cal ) {
             $calendars[$cal['id']] = $cal['displayname'];
         }
         return $calendars;
@@ -58,16 +58,15 @@ class tasks extends Widget implements interfaceWidget {
         $param = Array(
             'name'          => $split[0],
             'calendarID'    => $split[2],
-            'starred'       => $split[1],
+            'starred'       => false,
             'due'           => null,
             'start'         => date('c', time())
         );
 
-        $tasksApp = new \OCA\Tasks_enhanced\Dispatcher($param);
-        $tasksContainer = $tasksApp->getContainer();
-        $tasksController = $tasksContainer->query('TasksController');
+        $tasksApp = new Dispatcher($param);
+        $tasksApp->dispatch('TasksController', 'addTask');
 
-        if( $tasksController->addTask() != null ) {
+        if( true ) {
             return true;
         }
         return false;
@@ -82,10 +81,8 @@ class tasks extends Widget implements interfaceWidget {
 	 */
 	public function markAsDone($id) {
         $param = Array( "taskID" => $id );
-        $tasksApp = new \OCA\Tasks_enhanced\Dispatcher($param);
-        $tasksContainer = $tasksApp->getContainer();
-        $tasksController = $tasksContainer->query('TasksController');
-        $tasksController->completeTask();
+        $dispatcher = new Dispatcher($param);
+        $dispatcher->dispatch('TasksController', 'completeTask');
         return true;
 	}
 
@@ -94,7 +91,7 @@ class tasks extends Widget implements interfaceWidget {
      * @return Array with tasks as array
      */
     private function getTasks() {
-        $tasksApp = new \OCA\Tasks_enhanced\Dispatcher(null);
+        $tasksApp = new Dispatcher(null);
         $tasksContainer = $tasksApp->getContainer();
         $tasksController = $tasksContainer->query('TasksController');
         $data = $tasksController->getTasks()->getData();

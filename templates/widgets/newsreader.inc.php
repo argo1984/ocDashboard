@@ -52,7 +52,7 @@
                     $timestamp  = intval($additionalparams['pubDate']);
                     $time       = new DateTime();
                     $time->setTimestamp($timestamp);
-                    print_unescaped( $l->l('datetime', $time->getTimestamp()) );
+                    print_unescaped( \OCP\Util::formatDate($time->getTimestamp()) );
                     ?>
                 </div>
             </td>

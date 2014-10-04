@@ -97,7 +97,7 @@ class WidgetConfigs {
                                 'name'		=>	"Newsreader",
                                 'refresh'	=>	120,
                                 'icon'		=>	"icons/98.png",
-                                'conf'		=>	'[{"name":"correct time (add x hours)","type":"string","id":"timezoneAdd","default":"0"},{"name":"Max age of news to show (hours)","type":"string","id":"maxAge","default":"2"}]',
+                                'conf'		=>	'[{"name":"Max age of news to show (hours)","type":"string","id":"maxAge","default":"2"}]',
                                 'cond' 		=>	"news",
                                 'scripts'	=>	"newsreader",
                                 'styles'	=>	"newsreader",
