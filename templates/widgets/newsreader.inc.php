@@ -1,57 +1,77 @@
-<?php
-// add number of shown news and "mark as read" click
-if(isset($additionalparams['count']) && $additionalparams['count'] != "") { ?>
-	 
-	 <div class="ocDashboard newsreader counter"><?php p($additionalparams['actual'].'/'.$additionalparams['count']); ?> <span id="markNewsAsRead">&#10003;</span></div>
-
-<?php } ?>
-
-<?php
-// add favicon from source website
-if(isset($additionalparams['fav']) && $additionalparams['fav'] != "") {
-	$style = "background-image: url('".$additionalparams['fav']."'); background-repeat: no-repeat; background-position: 0px 2px; background-size: 18px 18px; padding-left: 21px;";
-} else {
-	$style = "";
-}
-?>
-	
-	<div class='ocDashboard newsreader items'>
-	
+<table>
+    <tr>
+        <th>
         <?php
-        if(isset($additionalparams['title']) && $additionalparams['title'] != "") {
-        ?>
-                <h2 style="<?php print_unescaped($style); ?>">
-                <?php
-                if(isset($additionalparams["url"]) && $additionalparams["url"] != "") {
-                ?>
-                    <a target='_blank' href="<?php print_unescaped($additionalparams["url"]); ?>"><?php p($additionalparams['title']); ?></a>
-                <?php
-                } else {
-                    p($additionalparams['title']);
-                }
-                ?>
-                </h2>
+        // add number of shown news and "mark as read" click
+        if( isset($additionalparams['count']) && $additionalparams['count'] != "" ) { ?>
+
+             <div class="counter">
+                 <?php
+                 p($additionalparams['actual'].'/'.$additionalparams['count']); ?>
+                 <span class="icon-toggle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+             </div>
+
         <?php
-        }
+        } else { ?>
 
-        // show date only if there are news
-        if (isset($additionalparams['title']) && $additionalparams['title'] != "" && isset($additionalparams['pubdate']) && $additionalparams['pubdate'] != "") {
-            if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") { ?>
+            &nbsp;
 
-                <div class='ocDashboard newsreader date'><?php p(date("d.m.y", $additionalparams['pubdate'])); ?> - <?php print_unescaped(date("G:i", $additionalparams['pubdate'])); ?> Uhr</div>
+        <?php
+        }?>
+        </th>
+    </tr>
 
-            <?php } else { ?>
+    <?php
+    // add header with link if available
+    if(isset($additionalparams['title']) && $additionalparams['title'] != "") { ?>
+        <tr>
+            <th>
+                <h1>
+                    <?php
+                    if(isset($additionalparams["url"]) && $additionalparams["url"] != "") { ?>
+                        <a target='_blank' href="<?php print_unescaped($additionalparams["url"]); ?>"><?php p($additionalparams['title']); ?></a>
+                    <?php
+                    } else {
+                        p($additionalparams['title']);
+                    }
+                    ?>
+                </h1>
+            </th>
+        </tr>
+    <?php
+    } ?>
 
-                <div class='ocDashboard newsreader date'><?php p(date("F j", $additionalparams['pubdate'])); ?><sup><?php print_unescaped(date("S", $additionalparams['pubdate'])); ?></sup> <?php print_unescaped(date("Y, g:i a", $additionalparams['pubdate'])); ?></div>
+    <?php
+    // add pubdate if available
+    if( isset($additionalparams['pubDate']) && $additionalparams['pubDate'] != '' ) { ?>
+        <tr>
+            <td>
+                <div class="pubdate">
+                    <?php
+                    $l          = new OC_L10N('ocDashboard');
+                    $timestamp  = intval($additionalparams['pubDate']);
+                    $time       = new DateTime();
+                    $time->setTimestamp($timestamp);
+                    print_unescaped( $l->l('datetime', $time->getTimestamp()) );
+                    ?>
+                </div>
+            </td>
+        </tr>
+    <?php
+    } ?>
 
-            <?php }
-        } ?>
- 
-        <div class='newsItem'>
-            <?php
-            if(isset($additionalparams['body']) && $additionalparams['body'] != "") {
+
+    <?php
+    // news content
+    if(isset($additionalparams['body']) && $additionalparams['body'] != "") { ?>
+        <tr>
+            <td>
+                <?php
                 print_unescaped($additionalparams['body']);
-            }
-             ?>
-        </div>
-    </div>
+                ?>
+            </td>
+        </tr>
+    <?php
+    } ?>
+
+</table>

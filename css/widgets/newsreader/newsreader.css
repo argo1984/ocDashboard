@@ -1,0 +1,25 @@
+.app-ocDashboard .widget.newsreader .content img {
+    max-height:         100%;
+    max-width:          100%;
+}
+
+.app-ocDashboard .widget.newsreader .content * {
+    white-space:       normal;
+}
+
+.app-ocDashboard .widget.newsreader .counter  {
+    padding-left:       170px;
+}
+.app-ocDashboard .widget.newsreader .counter span {
+    opacity:              0.5;
+}
+.app-ocDashboard .widget.newsreader .counter span:hover {
+    opacity:                1;
+    cursor:           pointer;
+}
+
+.app-ocDashboard .widget.newsreader .pubdate {
+    padding-left:        10px;
+    padding-right:       10px;
+    padding-bottom:      10px;
+}

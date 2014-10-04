@@ -2,7 +2,7 @@ $(document).ready(function() {
 
     // bind mark as read actions
     function bindMarkNewsAsRead() {
-        $("#markNewsAsRead").live('click',function(){
+        $(".app-ocDashboard .widget.newsreader .content .counter span").live('click',function(){
                 markNewsAsRead();
             }
         );
