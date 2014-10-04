@@ -28,7 +28,9 @@ class clock extends Widget implements interfaceWidget {
 	 * this array will be routed to the subtemplate for this widget 
 	 */
 	public function getWidgetData() {
-		return Array();
+        $date = new \DateTime();
+        $t = $date->format( $this->l->t('l, d-M-Y') );
+		return Array( 'date' => $t );
 	}
 	
 	// ======== END INTERFACE METHODS =============================
