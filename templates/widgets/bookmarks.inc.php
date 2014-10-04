@@ -1,17 +1,16 @@
-<div class='ocDashboard bookmarks items'>
+<table>
+<tr><th>&nbsp;</th></tr>
+<?php
+foreach ($additionalparams['bookmarks'] as $bookmark) {
+    if ($bookmark['title'] == "") {
+        $titel = $bookmark['url'];
+    } else {
+        $titel = $bookmark['title'];
+    } ?>
 
-    <?php
-    $style = "";
-    foreach ($additionalparams['bookmarks'] as $bookmark) { ?>
-        <div class='ocDashboard bookmarks item' <?php print_unescaped($style); ?>>
-            <?php
-                if ($bookmark['title'] == "") {
-                    $titel = $bookmark['url'];
-                } else {
-                    $titel = $bookmark['title'];
-                }
-            ?>
-            <a target="_blank" href="<?php p($bookmark['url']); ?>"><?php p($titel); ?></a>
-        </div>
-    <?php }	?>
-</div>
+    <tr><td><a target="_blank" href="<?php p($bookmark['url']); ?>"><?php p($titel); ?></a></td></tr>
+
+<?php
+} ?>
+
+</table>

@@ -14,10 +14,16 @@
 
     //set bg color for widgetItem
     setBgShadowColor: function (id, status) {
-        colors = ["rgba(0, 0, 0, 0.5)","rgba(0, 0, 0, 0.5)","darkgreen","#FF8000","red"];
-        $('#' + id).css('-webkit-box-shadow','0px 5px 15px -7px ' + colors[status]);
-        $('#' + id).css('-moz-box-shadow','0px 5px 15px -7px ' + colors[status]);
-        $('#' + id).css('box-shadow','0px 5px 15px -7px ' + colors[status]);
+        if( status == 0 || status == 1 ) {
+            $('.app-ocDashboard .widget.' + id).css('-webkit-box-shadow','');
+            $('.app-ocDashboard .widget.' + id).css('-moz-box-shadow','');
+            $('.app-ocDashboard .widget.' + id).css('box-shadow','');
+        } else {
+            colors = ["rgba(0, 0, 0, 0.5)","rgba(0, 0, 0, 0.5)","darkgreen","#FF8000","red"];
+            $('.app-ocDashboard .widget.' + id).css('-webkit-box-shadow','0px 5px 15px -7px ' + colors[status]);
+            $('.app-ocDashboard .widget.' + id).css('-moz-box-shadow','0px 5px 15px -7px ' + colors[status]);
+            $('.app-ocDashboard .widget.' + id).css('box-shadow','0px 5px 15px -7px ' + colors[status]);
+        }
         return true;
     },
 
@@ -30,17 +36,17 @@
             url:  OC.filePath('ocDashboard', 'ajax', 'reloadWidget.php') + '?widget=' + id,
             success: function(res) {
                 if (res.success) {
-                    $('#' + res.id).children().fadeOut("fast", function () {
-                        $('#' + res.id).children().remove();
-                        $('#' + res.id).append(res.HTML);
-                        $('#' + res.id).children().fadeIn("fast", function () {
+                    $('.app-ocDashboard .widget.' + res.id + ' .content').children().fadeOut("fast", function () {
+                        $('.app-ocDashboard .widget.' + res.id + ' .content').children().remove();
+                        $('.app-ocDashboard .widget.' + res.id + ' .content').append(res.HTML);
+                        $('.app-ocDashboard .widget.' + res.id + ' .content').children().fadeIn("fast", function () {
                             ocDashboard.hideWaitSymbol(res.id);
                         });
                     });
 
                     //set new status
-                    $('#' + id).data('status',res.STATUS);
-                    ocDashboard.setBgShadowColor(id,$('#' + id).data('status'));
+                    $('.app-ocDashboard .widget.' + id).data('status',res.STATUS);
+                    ocDashboard.setBgShadowColor(id,$('.app-ocDashboard .widget.' + id).data('status'));
                 } else {
                     // set error color
                     ocDashboard.setBgShadowColor(id,4);

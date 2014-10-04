@@ -1,4 +1,4 @@
-<table class="ocDashboardTable">
+<table class="">
     <tr>
         <td><input name ="keyword" class="keyword" type="text" size="30" /></td>
     </tr>

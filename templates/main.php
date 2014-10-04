@@ -45,7 +45,7 @@ foreach ( $_['widgets'] as $widget) {
         } ?>
         </div>
 
-
+        <div class="content">
         <?php
         // for single widget output --------------------------------------------------------------------------
         if(isset($_['singleOutput']) && $_['singleOutput']) {
@@ -75,6 +75,7 @@ foreach ( $_['widgets'] as $widget) {
                 print_unescaped("###?###");
             }
         ?>
+        </div>
 
     </div>
 

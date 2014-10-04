@@ -48,17 +48,17 @@ class bookmarks extends Widget implements interfaceWidget {
 
         $params=array(USER::getUser());
 
-        $sql = "SELECT *, (SELECT GROUP_CONCAT(`tag`) from `*PREFIX*bookmarks_tags` WHERE `bookmark_id` = `b`.`id`) as `tags`
+        $sql = 'SELECT *, (SELECT GROUP_CONCAT(`tag`) from `*PREFIX*bookmarks_tags` WHERE `bookmark_id` = `b`.`id`) as `tags`
 				FROM `*PREFIX*bookmarks` `b`
-				WHERE `user_id` = ? ";
+				WHERE `user_id` = ? ';
 
         // filter clause
-        $sql .= " AND	exists (SELECT `id` FROM  `*PREFIX*bookmarks_tags`
-			`t2` WHERE `t2`.`bookmark_id` = `b`.`id` AND ( `tag` = ? " . str_repeat(' OR `tag` = ? ', count($filters)-1) . " ) ) ";
+        $sql .= ' AND	exists (SELECT `id` FROM  `*PREFIX*bookmarks_tags`
+			`t2` WHERE `t2`.`bookmark_id` = `b`.`id` AND ( `tag` = ? ' . str_repeat(' OR `tag` = ? ', count($filters)-1) . ' ) ) ';
 
         $params = array_merge($params, $filters);
 
-        $sql .= " ORDER BY lastmodified DESC ";
+        $sql .= ' ORDER BY lastmodified DESC ';
 
         $query = DB::prepare($sql);
         $results = $query->execute($params)->fetchAll();

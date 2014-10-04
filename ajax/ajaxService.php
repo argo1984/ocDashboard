@@ -25,13 +25,13 @@ $value=isset($_GET['value'])?$_GET['value']:$_POST['value'];
 $widgetEnabled = (Config::getUserValue($user, "ocDashboard", "ocDashboard_".$id) == "yes");
 
 
-
+/*
 $RESPONSE["debug"] =    "user: ".$user." | ".
                         "widget: ".$id." | ".
                         "method: ".$method." | ".
                         "value: ".$value." | ".
                         "widgetEnabled: ".$widgetEnabled;
-
+*/
 
 
 // if widget is enabled

@@ -10,13 +10,24 @@ namespace OCA\ocDashboard;
  * @author Florian Steffens
  * 
  */
+use OC_DB;
 use OC_L10N;
+use OC_Log;
+use OCP\App;
+use OCP\DB;
 use OCP\User;
 use OCP\Util;
 
-class Widget {
-	
-	protected $id = "";
+abstract class Widget {
+
+    const STATUS_NOTHING    = 0;
+    const STATUS_OKAY       = 1;
+    const STATUS_NEW        = 2;
+    const STATUS_PROBLEM    = 3;
+    const STATUS_ERROR      = 4;
+    const STATUS_CUSTOM     = 5;
+
+    protected $id = "";
 	protected $name = "";
 	protected $l;
 	protected $user;
@@ -54,10 +65,12 @@ class Widget {
 
         $this->_helper = new helper();
 	}
-	
-	
+
+
 // --- PUBLIC ----------------------------------------
-	
+
+    abstract function getWidgetData();
+
 	/*
 	 * @return returns all data for the actual widget
 	 */
@@ -66,14 +79,14 @@ class Widget {
 			$return = $this->getWidgetData();
 			if($this->errorMsg != "") {
 				$return = Array("error"=>$this->errorMsg);
-				$this->status = 3;
+				$this->status = $this::STATUS_ERROR;
 			} else {
 				$this->loadScripts();
 				$this->loadStyles();
 			}
 		} else {
 			$return = Array("error"=>"Missing required app.");
-			$this->status = 4;
+			$this->status = $this::STATUS_ERROR;
 		}
 				
 		$return['id'] = $this->id;
@@ -125,12 +138,7 @@ class Widget {
 	 * @param $data data for hash in method setHashAndStatus
 	 * 
 	 * @return status number
-	 * 		0 = no status information
-	 * 		1 = all okay 
-	 * 		2 = something positiv happend (green)
-	 * 		3 = something negativ happend (orange)
-	 * 		4 = error (red)
-	 * 		5 = dummy (yellow)
+	 * see constants
 	 */
 	private function getStatus($data) {
 		$this->cleanHashs();
@@ -144,13 +152,13 @@ class Widget {
 	 */
 	private function cleanHashs() {
 		$sql = 'DELETE FROM `*PREFIX*ocDashboard_usedHashs` WHERE `user` = ? AND `timestamp` < ?;';
-		$query = \OCP\DB::prepare($sql);
+		$query = DB::prepare($sql);
 		$params = Array($this->user, time()-60*60*24);
 		$result = $query->execute($params);
 			
-		if (\OCP\DB::isError($result)) {
+		if (DB::isError($result)) {
 			Util::writeLog('ocDashboard',"Could not clean hashs.", Util::WARN);
-			Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
+			Util::writeLog('ocDashboard', OC_DB::getErrorMessage($result), OC_Log::ERROR);
 		}
 	}
 	
@@ -167,24 +175,23 @@ class Widget {
 		// hash exists in DB ?
 		$sql = 'SELECT * FROM `*PREFIX*ocDashboard_usedHashs` WHERE usedHash = ? AND widget = ? AND user = ? LIMIT 1;';
 		$params = Array($hash,$this->id,$this->user);
-		$query = \OCP\DB::prepare($sql);
-		$result = $query->execute($params)->fetchRow();
-		//if (\OCP\DB::isError($result)) {
-		//		\OCP\Util::writeLog('ocDashboard',"Could not find hash in db.", \OCP\Util::WARN);
-		//		\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
-		//}
-				
+		$query = DB::prepare($sql);
+        $resultNum = $query->execute($params)->rowCount();
+
 		// if not in DB, write to DB
-		if(!$result) {
-			$sql2 = 'INSERT INTO `*PREFIX*ocDashboard_usedHashs` (id,usedHash,widget,user,timestamp) VALUES (\'\',?,?,?,?); ';
+		if( $resultNum == 0 ) {
+			$sql2 = 'INSERT INTO `*PREFIX*ocDashboard_usedHashs` (usedHash,widget,user,timestamp) VALUES (?,?,?,?); ';
 			$params = Array($hash,$this->id,$this->user,time());
-			$query2 = \OCP\DB::prepare($sql2);
+			$query2 = DB::prepare($sql2);
 			$result2 = $query2->execute($params);
-			if (\OCP\DB::isError($result2)) {
+			if (DB::isError($result2)) {
 				Util::writeLog('ocDashboard',"Could not write hash to db.", Util::WARN);
-				Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
+				Util::writeLog('ocDashboard', OC_DB::getErrorMessage($result), OC_Log::ERROR);
 			}
-		}
+            $this->status = $this::STATUS_NEW;
+		} else {
+            $this->status = $this::STATUS_NOTHING;
+        }
 	}
 	
 	
@@ -217,14 +224,15 @@ class Widget {
 	private function checkConditions() {
 		if(isset($this->cond) && $this->cond != "") {
 			foreach(explode(",",$this->cond) as $cond) {
-				if(\OCP\App::isEnabled($cond) != 1) {
-					\OCP\Util::writeLog('ocDashboard',"App ".$cond." missing for ".$this->name, Util::WARN);
+				if(App::isEnabled($cond) != 1) {
+					Util::writeLog('ocDashboard',"App ".$cond." missing for ".$this->name, Util::WARN);
 					return false;
 				}
 			}
 		}
 		return true;
 	}
+
 
     /*
      * clean escaped characters
@@ -240,4 +248,5 @@ class Widget {
         //$str = str_replace('#=#', '&#92;', $str);
         return $str;
     }
+
 }

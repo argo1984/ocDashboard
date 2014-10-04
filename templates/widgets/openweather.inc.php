@@ -5,8 +5,7 @@
 
 ?>
 
-<div class='ocDashboard openweather items'>
-    <table class='openweatherTable'>
+    <table>
         <thead>
             <tr>
                 <td class="center" colspan="<?php print_unescaped($cols+1); ?>"><?php print_unescaped("<h1>".$l->t( $data['name'] )."</h1>"); ?></td>
@@ -32,7 +31,7 @@
             </tr>
         </tbody>
     </table>
-    <table class='openweatherTable paddingRight'>
+    <table>
         <tbody>
         <?php
             print_unescaped("<tr>");
@@ -138,4 +137,3 @@
             ?>
         </tbody>
     </table>
-</div>

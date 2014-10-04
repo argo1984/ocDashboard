@@ -1,7 +1,7 @@
-#ocDashboard .keyword {
-    width: 20em;
+.app-ocDashboard .widget.search .keyword {
+    width: 16em;
 }
 
-#ocDashboard .searchSubmit {
+.app-ocDashboard .widget.search .searchSubmit {
     font-size: 1em;
 }
