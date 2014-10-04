@@ -14,7 +14,7 @@ use OCA\ocDashboard\Widget;
  * more infos: 
  * 	randomibis.com/coolclock/
  * 
- * @version 0.1
+ * @version 0.2
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
@@ -28,9 +28,7 @@ class clock extends Widget implements interfaceWidget {
 	 * this array will be routed to the subtemplate for this widget 
 	 */
 	public function getWidgetData() {
-        $date = new \DateTime();
-        $t = $date->format( $this->l->t('l, d-M-Y') );
-		return Array( 'date' => $t );
+		return Array( 'date' => $this->l->l('date', time()) );
 	}
 	
 	// ======== END INTERFACE METHODS =============================
