@@ -14,20 +14,62 @@
     font-size: 1.2em;
 }
 
-.dashboardItem {
-	border: 0px rgb(230,230,230) solid;
-	float: left;
-	width: 300px;
-	height: 200px;
-	background-color: rgb(250,250,250);
-	padding: 10px;
-	margin-left: 10px;
-	margin-top: 10px;
-	text-align: center;
-	
-	-webkit-box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.5);
-   	-moz-box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.5);
-    box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.5);
+.app-ocDashboard .widget {
+    position: relative;
+	float:        left;
+    width:       300px;
+    height:      200px;
+    padding:       0px;
+    margin-left:  10px;
+    margin-top:   10px;
+    text-align: center;
+
+    border:                       0px rgb(230,230,230) solid;
+    background-color:                       rgb(250,250,250);
+    -webkit-box-shadow: 0px 5px 15px -7px rgba(0, 0, 0, 0.5);
+   	-moz-box-shadow:    0px 5px 15px -7px rgba(0, 0, 0, 0.5);
+    box-shadow:         0px 5px 15px -7px rgba(0, 0, 0, 0.5);
+}
+
+.app-ocDashboard .widget .icon img {
+    height:       40px;
+    width:        40px;
+}
+
+.app-ocDashboard .widget .icon {
+    position: absolute;
+    right:         5px;
+    top:           4px;
+    padding:         0;
+    height:       40px;
+    width:        40px;
+}
+
+.app-ocDashboard .hoverInfo {
+    /*visibility: hidden;*/
+    opacity: 0.25;
+}
+
+.app-ocDashboard .widget .waitSymbol {
+    position: absolute;
+    left:          2px;
+    bottom:        2px;
+    width:        20px;
+    height:       20px;
+    display:      none;
+}
+
+.app-ocDashboard .heading {
+    padding-top:   2px;
+}
+
+.app-ocDashboard .heading span {
+    width:        20px;
+    height:       20px;
+}
+
+.app-ocDashboard .heading span:hover {
+    cursor:       hand;
 }
 
 .ocDashboard.inAction {
@@ -192,6 +234,3 @@
     margin-bottom: 40px;
 }
 
-#ocDashboard .hoverInfo {
-    visibility: hidden;
-}

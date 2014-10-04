@@ -95,7 +95,7 @@ class WidgetConfigs {
                             Array(
                                 'id' 		=>	"newsreader",
                                 'name'		=>	"Newsreader",
-                                'refresh'	=>	120,
+                                'refresh'	=>	10,
                                 'icon'		=>	"icons/98.png",
                                 'conf'		=>	'[{"name":"correct time (add x hours)","type":"string","id":"timezoneAdd","default":"0"},{"name":"Max age of news to show (hours)","type":"string","id":"maxAge","default":"2"}]',
                                 'cond' 		=>	"news",
@@ -143,7 +143,7 @@ class WidgetConfigs {
                             Array(
                                 'id' 		=>	"search",
                                 'name'		=>	"Search",
-                                'refresh'	=>	0,
+                                'refresh'	=>	120,
                                 'icon'		=>	"icons/12.png",
                                 'conf'		=>	'[{"name":"Default Search Engine","type":"select","id":"defaultSearchEngine","default":"0","options":[{"id":"0","name":"Google"},{"id":"1","name":"Yahoo"},{"id":"2","name":"Bing"},{"id":"3","name":"DuckDuckGo"},{"id":"4","name":"Ask"},{"id":"5","name":"eBay"},{"id":"6","name":"Amazon"},{"id":"7","name":"Youtube"}]},{"name":"Search Engine Language","type":"select","id":"defaultSearchEngineLanguage","default":"0","options":[{"id":"0","name":"English"},{"id":"1","name":"German"}]}]',
                                 'cond' 		=>	"",

@@ -5,13 +5,11 @@
 
     // set or unset the refreshBlockId
     setHoverWidgetId: function (id) {
-        //console.log("start setHoverWidgetId (id = " + id + ")");
         if(ocDashboard.hoverWidgetId == id) {
             ocDashboard.hoverWidgetId = null;
         } else {
             ocDashboard.hoverWidgetId = id;
         }
-        //console.log("setHoverWidgetId = " + ocDashboard.setHoverWidgetId);
     },
 
     //set bg color for widgetItem
@@ -26,93 +24,93 @@
 
     //load widget via ajax and set in html
     loadWidget: function (id) {
-        if(ocDashboard.hoverWidgetId != id) {
-            //alert(OC.filePath('ocDashboard', 'ajax', 'reloadWidget.php') + '?widget=' + id);
-            $.ajax({
-                dataType: "json",
-                url:  OC.filePath('ocDashboard', 'ajax', 'reloadWidget.php') + '?widget=' + id,
-                success: function(res) {
-                    if (res.success) {
-                        $('#' + res.id).children().fadeOut("fast", function () {
-                            $('#' + res.id).children().remove();
-                            $('#' + res.id).append(res.HTML);
-                            $('#' + res.id).children().fadeIn("fast", function () {
-                                ocDashboard.hideWaitSymbol(res.id);
-                            });
+        //alert(OC.filePath('ocDashboard', 'ajax', 'reloadWidget.php') + '?widget=' + id);
+        $.ajax({
+            dataType: "json",
+            url:  OC.filePath('ocDashboard', 'ajax', 'reloadWidget.php') + '?widget=' + id,
+            success: function(res) {
+                if (res.success) {
+                    $('#' + res.id).children().fadeOut("fast", function () {
+                        $('#' + res.id).children().remove();
+                        $('#' + res.id).append(res.HTML);
+                        $('#' + res.id).children().fadeIn("fast", function () {
+                            ocDashboard.hideWaitSymbol(res.id);
                         });
+                    });
 
-                        //set new status
-                        $('#' + id).data('status',res.STATUS);
-                        ocDashboard.setBgShadowColor(id,$('#' + id).data('status'));
-                    } else {
-                        // set error color
-                        ocDashboard.setBgShadowColor(id,4);
-                        console.log("no success from server");
-                        ocDashboard.hideWaitSymbol(id);
-                    }
-                },
-                error: function(xhr, status, error) {
+                    //set new status
+                    $('#' + id).data('status',res.STATUS);
+                    ocDashboard.setBgShadowColor(id,$('#' + id).data('status'));
+                } else {
                     // set error color
                     ocDashboard.setBgShadowColor(id,4);
-                    console.log("ajax error");
+                    console.log("no success from server");
                     ocDashboard.hideWaitSymbol(id);
                 }
-            });
-        }
+            },
+            error: function(xhr, status, error) {
+                // set error color
+                ocDashboard.setBgShadowColor(id,4);
+                console.log("ajax error");
+                ocDashboard.hideWaitSymbol(id);
+            }
+        });
     },
 
 
     // shows the wait symbol on the left bottom corner
     showWaitSymbol: function (id) {
-        $('.ocDashboard.inAction.' + id).fadeIn();
+        $('.app-ocDashboard .widget.' + id + ' .waitSymbol').fadeIn();
     },
 
 
     // hides the wait symbol on the left bottom corner
     hideWaitSymbol: function (id) {
-        $('.ocDashboard.inAction.' + id).fadeOut();
+        $('.app-ocDashboard .widget.' + id + ' .waitSymbol').fadeOut();
     },
 
 
     // automatic reload for widgets with interval > 0
     initialize: function () {
-        $('.dashboardItem').each(function(i, current){
-            if( $("#" + current.id ).data('interval') != 0) {
-                // set refreshs
-                ocDashboard.refreshIds[i] = setInterval(
-                    function() {
-                        ocDashboard.loadWidget(current.id);
-                    },
-                    $('#' + current.id).data('interval')
-                );
+        $('.app-ocDashboard .widget').each(
+            function(i, current){
+                var id = $(this).data('id');
 
-                //set status at start
-                if( $("#" + current.id ).data('interval') != 0) {
-                    ocDashboard.setBgShadowColor(
-                        current.id,
-                        $('#' + current.id).data('status')
+                // set refreshs
+                if( $('.app-ocDashboard .widget.' + id ).data('interval') != 0) {
+                    ocDashboard.refreshIds[i] = setInterval(
+                        function() {
+                            if(ocDashboard.hoverWidgetId != id) {
+                                ocDashboard.loadWidget(id);
+                            }
+                        },
+                        $('.app-ocDashboard .widget.' + id).data('interval')
                     );
                 }
 
+                // set status at start
+                ocDashboard.setBgShadowColor( id, $('.app-ocDashboard .widget.' + id).data('status') );
+
                 // bind reload button actions
-                $('#' + current.id + ' .ocDashboard.head span').live(
+                $('.app-ocDashboard .widget.' + id + ' span').live(
                     'click',
                     function () {
-                        ocDashboard.showWaitSymbol(current.id);
-                        ocDashboard.loadWidget(current.id);
+                        ocDashboard.showWaitSymbol(id);
+                        ocDashboard.loadWidget(id);
+                    }
+                );
+
+                // bind refreshBlock hover action
+                $('.app-ocDashboard .widget.' + id).live(
+                    'hover',
+                    function() {
+                        ocDashboard.setHoverWidgetId(id);
+                        ocDashboard.hideOrShowWidgetInformation();
                     }
                 );
 
             }
-            // bind refreshBlock hover action
-            $('#' + current.id).live(
-                'hover',
-                function() {
-                    ocDashboard.setHoverWidgetId(current.id);
-                    ocDashboard.hideOrShowWidgetInformation();
-                }
-            );
-        })
+        );
     },
 
 
@@ -120,9 +118,22 @@
     // on mouse out hide the divs
     hideOrShowWidgetInformation: function () {
         if( ocDashboard.hoverWidgetId == null) {
-            $('.ocDashboardWidget .hoverInfo').css('visibility', 'hidden');
+            $('.app-ocDashboard .widget .hoverInfo').each( function (i, current) {
+               var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacitynormal') + '"}' );
+               $(this).animate(
+                   opacity,
+                   100
+               );
+            });
+
         } else {
-            $('#' + ocDashboard.hoverWidgetId + '.ocDashboardWidget .hoverInfo').css('visibility', 'visible');
+            $('.app-ocDashboard .widget.' + ocDashboard.hoverWidgetId + ' .hoverInfo').each( function (i, current) {
+                var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacityhover') + '"}' );
+                $(this).animate(
+                    opacity,
+                    100
+                );
+            });
         }
     },
 
@@ -151,9 +162,6 @@
 
 
 $(document).ready(function() {
-
-	// fade in widgets
-	$(".dashboardItem").fadeIn();
 
 	ocDashboard.initialize();
 
