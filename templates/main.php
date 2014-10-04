@@ -27,20 +27,20 @@ foreach ( $_['widgets'] as $widget) {
         <?php
         // add heading (if availible with link)
         if(isset($widget['link']) AND $widget['link'] != '') { ?>
-            <div class="heading">
+            <div class="heading hoverInfo" data-opacitynormal="0.6">
                 <a href="<?php print_unescaped($widget['link']); ?>">
                     <?php print_unescaped($l->t($widget['name'])); ?>
                 </a>
         <?php
         } else { ?>
-            <div class="heading">
+            <div class="heading hoverInfo" data-opacitynormal="0.4">
                 <?php print_unescaped($l->t($widget['name'])); ?>
         <?php
         }
 
         // add reload button
         if ( isset($widget['interval']) && $widget['interval'] != '' ) { ?>
-            <span class="hoverInfo icon-history" data-opacitynormal="0" data-opacityhover="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span class="hoverInfo icon-history" data-opacityhover="0.4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
         <?php
         } ?>
         </div>

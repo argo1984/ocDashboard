@@ -45,11 +45,6 @@
     width:        40px;
 }
 
-.app-ocDashboard .hoverInfo {
-    /*visibility: hidden;*/
-    opacity: 0.25;
-}
-
 .app-ocDashboard .widget .waitSymbol {
     position: absolute;
     left:          2px;
@@ -61,6 +56,10 @@
 
 .app-ocDashboard .heading {
     padding-top:   2px;
+    font-size:   1.3em;
+    font-weight:  bold;
+    text-align:   left;
+    padding-left:  8px;
 }
 
 .app-ocDashboard .heading span {
@@ -69,7 +68,12 @@
 }
 
 .app-ocDashboard .heading span:hover {
-    cursor:       hand;
+    cursor:       pointer;
+    opacity:            1 !important;
+}
+
+.app-ocDashboard .hoverInfo {
+    opacity: 0;
 }
 
 .ocDashboard.inAction {

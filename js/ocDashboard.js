@@ -109,6 +109,8 @@
                     }
                 );
 
+                // set hoverInfo values
+                ocDashboard.hideOrShowWidgetInformation();
             }
         );
     },
@@ -116,19 +118,30 @@
 
     // on mouse over a widget, show all div with class hoverInfo
     // on mouse out hide the divs
+    // you can set data-opacityhover to a numeric value
+    // you can set data-opacitynormal to a numeric value
     hideOrShowWidgetInformation: function () {
         if( ocDashboard.hoverWidgetId == null) {
             $('.app-ocDashboard .widget .hoverInfo').each( function (i, current) {
-               var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacitynormal') + '"}' );
-               $(this).animate(
+                if( typeof $(this).data('opacitynormal') === 'undefined' ) {
+                    var opacity = jQuery.parseJSON( '{ "opacity": "0"}' );
+                } else {
+                    var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacitynormal') + '"}' );
+                }
+
+                $(this).animate(
                    opacity,
                    100
                );
             });
-
         } else {
             $('.app-ocDashboard .widget.' + ocDashboard.hoverWidgetId + ' .hoverInfo').each( function (i, current) {
-                var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacityhover') + '"}' );
+                if( typeof $(this).data('opacityhover') === 'undefined' ) {
+                    var opacity = jQuery.parseJSON( '{ "opacity": "1"}' );
+                } else {
+                    var opacity = jQuery.parseJSON( '{ "opacity": "' + $(this).data('opacityhover') + '"}' );
+                }
+
                 $(this).animate(
                     opacity,
                     100
