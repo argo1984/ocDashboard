@@ -39,7 +39,7 @@
     padding:            0;
     height:          40px;
     width:           40px;
-    z-index:          100;
+    z-index:           10;
 }
 
 .app-ocDashboard .widget .waitSymbol {
@@ -74,13 +74,11 @@
 }
 
 .app-ocDashboard .widget .content {
-    background-color:gray;
     position:    absolute;
     left:             8px;
     right:            8px;
     top:             25px;
     bottom:           0px;
-    background-color:gray;
     overflow:        auto;
 }
 
