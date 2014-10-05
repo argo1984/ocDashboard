@@ -13,7 +13,7 @@ use OCP\Util;
  * copyright 2013
  *
  * non-commercial only
- * moreinfos:
+ * more infos:
  * 	weather.yahoo.com
  *
  * @version 0.1
@@ -21,6 +21,7 @@ use OCP\Util;
  * @author Florian Steffens (flost@live.no)
  */
 class weather extends Widget implements interfaceWidget {
+
 	private $cityUrl = "http://weather.yahooapis.com/forecastrss?w=###code###&u=###unit###";
 	private $luftdruckZeichen = Array("&rarr;","&uarr;","&darr;");
 	private $xml;
@@ -84,7 +85,7 @@ class weather extends Widget implements interfaceWidget {
 			$con = @file_get_contents($url);
 	
 			if($con != "" && strlen($con) > 500) {
-				$this->xml = new SimpleXMLElement($con);
+				$this->xml = new \SimpleXMLElement($con);
 				return true;
 			} else {
 				Util::writeLog('ocDashboard',"Weather could not load: ".$url, Util::WARN);
@@ -217,7 +218,7 @@ class weather extends Widget implements interfaceWidget {
 	
 	/*
 	 * @return humidity information
-	 * @param $arg wich information is asked (humidity, rising)
+	 * @param $arg which information is asked (humidity, rising)
 	 */
 	private function getHumidity($arg) {
 		if(!$this->xml)
