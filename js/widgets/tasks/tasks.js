@@ -19,11 +19,11 @@
     // ajax action for adding new task
     createNewTask: function () {
         ocDashboard.showWaitSymbol('tasks');
-        var value = $("#addTaskSummary").val() + "#|#" + $("#addTaskCalendarId").val();
-        alert(value);
+        var jsonValue = '[{"summary":"' + $("#addTaskSummary").val() + '"},{"calendarId":"' + $("#addTaskCalendarId").val() + '"}]';
+        alert(jsonValue);
         ocDashboard.ajaxService('tasks',
             'newTask',
-            value,
+            jsonValue,
             function(res) {
                 ocDashboard.loadWidget('tasks');
             }

@@ -53,11 +53,11 @@ class tasks extends Widget implements interfaceWidget {
      * @return boolean if success
      */
     public function newTask($data) {
-        $split = explode("#|#",$data);
+        $d = json_decode($data);
 
         $param = Array(
-            'name'          => $split[0],
-            'calendarID'    => $split[2],
+            'name'          => $d['summary'],
+            'calendarID'    => $d['calendarId'],
             'starred'       => false,
             'due'           => null,
             'start'         => date('c', time())
