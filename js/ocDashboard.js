@@ -20,9 +20,9 @@
             $('.app-ocDashboard .widget.' + id).css('box-shadow','');
         } else {
             colors = ["rgba(0, 0, 0, 0.5)","rgba(0, 0, 0, 0.5)","darkgreen","#FF8000","red"];
-            $('.app-ocDashboard .widget.' + id).css('-webkit-box-shadow','0px 1px 8px -2px ' + colors[status]);
-            $('.app-ocDashboard .widget.' + id).css('-moz-box-shadow','0px 1px 8px -2px ' + colors[status]);
-            $('.app-ocDashboard .widget.' + id).css('box-shadow','0px 1px 8px -2px ' + colors[status]);
+            $('.app-ocDashboard .widget.' + id).css('-webkit-box-shadow','0px 1px 5px -2px ' + colors[status]);
+            $('.app-ocDashboard .widget.' + id).css('-moz-box-shadow','0px 1px 5px -2px ' + colors[status]);
+            $('.app-ocDashboard .widget.' + id).css('box-shadow','0px 1px 5px -2px ' + colors[status]);
         }
         return true;
     },

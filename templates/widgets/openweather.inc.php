@@ -39,21 +39,17 @@
             // temperature
             print_unescaped("<td colspan='".($cols+1)."'><h2>".$l->t( "Temperature" )."</h2></td></tr><tr>");
             print_unescaped("<td class='right'>");
-            print_unescaped($l->t( "day" )."<br>");
             print_unescaped($l->t( "min" )."<br>");
             print_unescaped($l->t( "max" )."<br>");
-            //print_unescaped($l->t( "morning" )."<br>");
-            //print_unescaped($l->t( "evening" )."<br>");
+            print_unescaped($l->t( "day" )."<br>");
             print_unescaped($l->t( "night" ));
             print_unescaped("</td>");
 
             for($i=0; $i < $cols; $i++) {
                 print_unescaped("<td class='right'>");
-                print_unescaped(round($data[$i]['temperature']['day']).$data[$i]['temperature']['unit']."<br>");
                 print_unescaped(round($data[$i]['temperature']['min']).$data[$i]['temperature']['unit']."<br>");
                 print_unescaped(round($data[$i]['temperature']['max']).$data[$i]['temperature']['unit']."<br>");
-                //print_unescaped($data[$i]['temperature']['day'].$data[$i]['temperature']['unit']."<br>");
-                //print_unescaped($data[$i]['temperature']['day'].$data[$i]['temperature']['unit']."<br>");
+                print_unescaped(round($data[$i]['temperature']['day']).$data[$i]['temperature']['unit']."<br>");
                 print_unescaped(round($data[$i]['temperature']['night']).$data[$i]['temperature']['unit']);
                 print_unescaped("</td>");
             }
