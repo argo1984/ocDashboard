@@ -1,3 +1,27 @@
+;ocDashboardSettings = {
+
+    initialize: function () {
+        $('.widgetSettingsTriangle').each(function (i, current) {
+            var id = $(current).data('id');
+            $('.widgetSettingsTriangle.' + id).on('click', function () {
+                id = $(this).data('id');
+                if( $(this).data('expanded') == 0 ) {
+                    $('.widgetSettings.' + id).slideDown();
+                    $(this).data('expanded','1');
+                    $(this).removeClass('icon-triangle-s');
+                    $(this).addClass('icon-triangle-n');
+                } else {
+                    $('.widgetSettings.' + id).slideUp();
+                    $(this).data('expanded','0');
+                    $(this).removeClass('icon-triangle-n');
+                    $(this).addClass('icon-triangle-s');
+                }
+            });
+        });
+    }
+
+}
+
 OC.AppUserConfig={
 	url:OC.filePath('ocDashboard', 'ajax', 'AppUserConfig.php'),
 	postCall:function(action,data,callback){
@@ -14,6 +38,7 @@ OC.AppUserConfig={
 		OC.AppUserConfig.postCall('setValue',{app:app,key:key,value:value});
 	}
 };
+
 
 $(document).ready(function() {
 
@@ -57,5 +82,7 @@ $(document).ready(function() {
             OC.AppUserConfig.setValue('ocDashboard', current.id, $('#' + current.id).val());
         });
     });
+
+    ocDashboardSettings.initialize();
 
 });

@@ -69,3 +69,16 @@
 .colorOrange {
     color: orange;
 }
+
+.widgetSettings {
+    display: none;
+}
+
+.widgetSettingsTriangle {
+    cursor: pointer;
+    opacity: 0.5;
+}
+.widgetSettingsTriangle:hover {
+    cursor: pointer;
+    opacity: 1;
+}
