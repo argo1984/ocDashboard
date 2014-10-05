@@ -143,6 +143,9 @@ abstract class Widget {
 	private function getStatus($data) {
 		$this->cleanHashs();
 		$this->setHashAndStatus($data);
+        if( $this->status < $this::STATUS_PROBLEM && $this->errorMsg != '' ) {
+            $this->status = $this::STATUS_PROBLEM;
+        }
 		return $this->status;
 	}
 	
@@ -186,7 +189,7 @@ abstract class Widget {
 			$result2 = $query2->execute($params);
 			if (DB::isError($result2)) {
 				Util::writeLog('ocDashboard',"Could not write hash to db.", Util::WARN);
-				Util::writeLog('ocDashboard', OC_DB::getErrorMessage($result), OC_Log::ERROR);
+				Util::writeLog('ocDashboard', OC_DB::getErrorMessage($result2), OC_Log::ERROR);
 			}
             $this->status = $this::STATUS_NEW;
 		} else {

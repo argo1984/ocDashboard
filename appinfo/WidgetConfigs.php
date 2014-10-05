@@ -74,7 +74,7 @@ class WidgetConfigs {
                                 'refresh'	=>	60,
                                 'icon'		=>	"icons/49.png",
                                 'conf'		=>	'[{"id":"sort","type":"radio","options":[{"id":"DESC","name":"new tasks first"},{"id":"ASC","name":"old tasks first"}],"name":"display order","default":"DESC"}]',
-                                'cond' 		=>	"tasks_enhanced",
+                                'cond' 		=>	"tasks",
                                 'scripts'	=>	"tasks",
                                 'styles'	=>	"tasks",
                                 'link'		=>	"index.php/apps/tasks_enhanced/",

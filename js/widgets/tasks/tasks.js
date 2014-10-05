@@ -52,7 +52,7 @@
     markAsRead: function (id) {
         ocDashboard.showWaitSymbol('tasks');
         //$("#task-" + id).parent().fadeOut();
-        alert(id);
+        //alert(id);
         ocDashboard.ajaxService('tasks',
             'markAsDone',
             id,

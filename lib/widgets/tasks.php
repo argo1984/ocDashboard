@@ -4,7 +4,8 @@ namespace OCA\ocDashboard\lib\widgets;
 
 use OCA\ocDashboard\interfaceWidget;
 use OCA\ocDashboard\Widget;
-use OCA\Tasks_enhanced\Dispatcher;
+use OCA\Tasks\AppInfo\Application as TaskApp;
+use OCA\Tasks\Controller\TasksController;
 
 
 /*
@@ -25,12 +26,10 @@ class tasks extends Widget implements interfaceWidget {
 	 * this array will be routed to the subtemplate for this widget 
 	 */
 	public function getWidgetData() {
-        //$this->newTask("neu#|#0#|#1");
-        $return = Array(
+        return Array(
             "tasks" => $this->getTasks(),
             "calendars" => $this->getCalendars()
         );
-        return $return;
 	}
 	
 	// ======== END INTERFACE METHODS =============================
@@ -55,20 +54,16 @@ class tasks extends Widget implements interfaceWidget {
     public function newTask($data) {
         $d = json_decode($data);
 
-        $param = Array(
+        $params = Array(
             'name'          => $d['summary'],
             'calendarID'    => $d['calendarId'],
             'starred'       => false,
             'due'           => null,
             'start'         => date('c', time())
         );
-
-        $tasksApp = new Dispatcher($param);
-        $tasksApp->dispatch('TasksController', 'addTask');
-
-        if( true ) {
-            return true;
-        }
+        // TODO: does not work
+        $tasksController = $this->getTasksController($params);
+        $tasksController->addTask();
         return false;
     }
 
@@ -80,10 +75,13 @@ class tasks extends Widget implements interfaceWidget {
 	 * @return boolean if success
 	 */
 	public function markAsDone($id) {
-        $param = Array( "taskID" => $id );
-        $dispatcher = new Dispatcher($param);
-        $dispatcher->dispatch('TasksController', 'completeTask');
-        return true;
+        $params = Array(
+            'taskID'    => $id
+        );
+        // TODO: does not work
+        $tasksController = $this->getTasksController($params);
+        $tasksController->completeTask();
+        return "id: ".$id;
 	}
 
 
@@ -91,12 +89,24 @@ class tasks extends Widget implements interfaceWidget {
      * @return Array with tasks as array
      */
     private function getTasks() {
-        $tasksApp = new Dispatcher(null);
-        $tasksContainer = $tasksApp->getContainer();
-        $tasksController = $tasksContainer->query('TasksController');
-        $data = $tasksController->getTasks()->getData();
-        return $data
-        ['data']['tasks'];
+        $tasksController = $this->getTasksController();
+        $tasks = $tasksController->getTasks()->getData();
+        return $tasks['data']['tasks'];
+    }
+
+
+    /**
+     * fetch a instance of the TasksController from the tasks app
+     *
+     * @param array with values for the DIContainer
+     * @return TasksController
+     */
+    private function getTasksController($params = null) {
+        $taskApp = new TaskApp($params);
+        $taskContainer = $taskApp->getContainer();
+        /** @var  $tasksController TasksController */
+        $tasksController = $taskContainer->query('TasksController');
+        return $tasksController;
     }
 	
 }

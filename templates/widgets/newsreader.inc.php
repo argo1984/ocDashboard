@@ -1,3 +1,7 @@
+<script>
+    ocDashboard.newsreader.resizeContentImg();
+</script>
+
 <table>
     <tr>
         <th>

@@ -71,8 +71,6 @@ class weather extends Widget implements interfaceWidget {
 	 * loads the xml file from yahoo with the weather informations
 	 */
 	private function getXml() {
-	
-		$code = "";
 		$code = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_weather_city");
 		if (!isset($code) || $code == "" || !is_numeric($code)) {
 			$this->errorMsg = "The city code is not valid.";
@@ -89,7 +87,7 @@ class weather extends Widget implements interfaceWidget {
 				$this->xml = new SimpleXMLElement($con);
 				return true;
 			} else {
-				Util::writeLog('ocDashboard',"Weather coul not load: ".$url, Util::WARN);
+				Util::writeLog('ocDashboard',"Weather could not load: ".$url, Util::WARN);
 				$this->errorMsg = "The city code is not valid.";
 				return false;
 			}

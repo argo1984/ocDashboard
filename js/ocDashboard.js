@@ -166,6 +166,7 @@
             OC.filePath('ocDashboard', 'ajax', 'ajaxService.php'),
             data,
             function(result){
+                alert(result.response);
                 if(result.success){
                     //alert(result.debug);
                     if(callback){

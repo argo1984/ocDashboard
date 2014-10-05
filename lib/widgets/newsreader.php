@@ -104,9 +104,6 @@ class newsreader extends Widget implements interfaceWidget {
     }
 
     private function getNewsapi() {
-        $t = $this->_helper->isLowerThanVersion(6);
-
-
         $app = new \OCA\News\AppInfo\Application();
         $container = $app->getContainer();
         $this->itembusinesslayer = $container->query('ItemBusinessLayer');
