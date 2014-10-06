@@ -18,10 +18,7 @@
         ocDashboard.ajaxService(
             'newsreader',
             'markAsRead',
-            '',
-            function() {
-                ocDashboard.loadWidget('newsreader');
-            }
+            ''
         );
     },
 

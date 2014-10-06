@@ -29,7 +29,7 @@
 	foreach ($additionalparams['tasks'] as $task) {
         if($task['completed'] != 1) {
             if(count($additionalparams['tasks']) > 0 && isset($additionalparams['calendars'][$task['calendarid']])) {
-                print_unescaped('<tr><td><h3 style="color: '.$task['calendarcolor'].'">'.$additionalparams['calendars'][$task['calendarid']].'</h3></td></tr>');
+                print_unescaped('<tr><td><h3>'.$additionalparams['calendars'][$task['calendarid']].'</h3><div class="calendarColor" style="color: '.$task['calendarcolor'].'">&#9632;</div></td></tr>');
                 unset($additionalparams['calendars'][$task['calendarid']]);
             }
             ?>

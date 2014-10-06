@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+#content-wrapper {
+    padding-bottom:  20px;
+}
+
 .app-ocDashboard .widget {
     position:    relative;
 	float:           left;
@@ -49,6 +53,7 @@
     width:           20px;
     height:          20px;
     display:         none;
+    z-index:           11;
 }
 
 .app-ocDashboard .heading {

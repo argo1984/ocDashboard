@@ -14,3 +14,18 @@
     color: black;
     cursor: pointer;
 }
+
+.app-ocDashboard .widget.tasks .content .calendarColor {
+    display: inline;
+    padding-left: 5px;
+    font-size: 2em;
+}
+.app-ocDashboard .widget.tasks .content h3 {
+    display: inline;
+    padding-top: 5px;
+}
+
+
+.app-ocDashboard .widget.tasks .content .addTask, .app-ocDashboard .widget.tasks .content span {
+    display: none;
+}

@@ -50,14 +50,14 @@
                 } else {
                     // set error color
                     ocDashboard.setBgShadowColor(id,4);
-                    console.log("no success from server");
+                    //console.log("no success from server");
                     ocDashboard.hideWaitSymbol(id);
                 }
             },
             error: function(xhr, status, error) {
                 // set error color
                 ocDashboard.setBgShadowColor(id,4);
-                console.log("ajax error");
+                //console.log("ajax error");
                 ocDashboard.hideWaitSymbol(id);
             }
         });
@@ -166,7 +166,6 @@
             OC.filePath('ocDashboard', 'ajax', 'ajaxService.php'),
             data,
             function(result){
-                alert(result.response);
                 if(result.success){
                     //alert(result.debug);
                     if(callback){
