@@ -52,7 +52,7 @@ class WidgetConfigs {
                                 'conf'		=>	'[{"name":"correct time (add x hours)","type":"string","id":"timezoneAdd","default":"0"}]',
                                 'cond' 		=>	"calendar",
                                 'scripts'	=>	"",
-                                'styles'	=>	"",
+                                'styles'	=>	"calendar",
                                 'link'		=>	"index.php/apps/calendar/",
                                 'commercial'=>  true
 							),

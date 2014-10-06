@@ -2,390 +2,299 @@
 
 namespace OCA\ocDashboard\lib\widgets;
 
-use OC_L10N;
+use OCA\Contacts\App as ContactApp;
 use OCA\ocDashboard\interfaceWidget;
 use OCA\ocDashboard\Widget;
 use OCP\Config;
+use OCP\User;
 
 
 /*
  * shows the next meetings from the cownCloud calender app
  * copyright 2013
  * 
- * @version 0.1
+ * @version 0.2
  * @date 01-08-2013
  * @author Florian Steffens (flost@live.no)
  */
 class calendar extends Widget implements interfaceWidget {
-	
-	private $events = Array();
-	private $numEvents = 20; // max number of showen events
-	private $timezoneAdd = 0;
-	private $standardCalendarColor = "gray";
 
-	// ======== INTERFACE METHODS ================================
+    /**
+     *
+     *
+     * Array
+     *  today
+     *      allDay
+     *      events
+     *  now
+     *      allDay
+     *      events
+     *  tomorrow
+     *      allDay
+     *      events
+     *  soon
+     *      allDay
+     *      events
+     *
+     *
+     * soo = 7 days
+     * allDay includes birthdays
+     *
+     */
+    private $_events = Array(
+        'now'     => Array(
+            'allDay'    => Array(),
+            'events'    => Array()
+        ),
+        'today'       => Array(
+            'allDay'    => Array(),
+            'events'    => Array()
+        ),
+        'tomorrow'       => Array(
+            'allDay'    => Array(),
+            'events'    => Array()
+        ),
+        'soon'       => Array(
+            'allDay'    => Array(),
+            'events'    => Array()
+        )
+    );
 
-	/*
-	 * @return Array of all data for output
-	 * this array will be routed to the subtemplate for this widget 
-	 */
-	public function getWidgetData() {
-		$return = Array();
-		$temp = Array();
-		$this->timezoneAdd = Config::getUserValue($this->user, "ocDashboard", "ocDashboard_calendar_timezoneAdd",0);
-		$this->prepareEvents();
-						
-		$now = false;
-		$eNow[] = Array("type" => "headline", "value" => "Now");
-		$today = false;
-		$eToday[] = Array("type" => "headline", "value" => "Today");
-		$tomorrow = false;
-		$eTomorrow[] = Array("type" => "headline", "value" => "Tomorrow");
-		$soon = false;
-		$eSoon[] = Array("type" => "headline", "value" => "Soon");
-		$time = time()+($this->timezoneAdd*60*60);
-		$beginOfTomorrow = strtotime("midnight", $time+24*60*60);
-		$endOfTomorrow   = strtotime("tomorrow", $beginOfTomorrow) - 1;
-		
-		// birthdays -----------------------------------
-		
-		// birthdays today
-		// are there birthdays today
-		$birthdays = $this->getBirthdays($time);
-		foreach ($birthdays as $b) {
-			$eToday[] = Array("type" => "event", "event" => $this->getEventData($b));
-		}
-		
-		// birthdays tomorrow
-		// are there birthdays tomorrow
-		$birthday = $this->getBirthdays($time+(24*60*60));
-		foreach ($birthday as $b) {
-			$eTomorrow[] = Array("type" => "event", "event" => $this->getEventData($b));
-		}
-		
-		// birthdays soon
-		// are there birthdays soon
-		$birthday = $this->getBirthdays($time+(24*60*60*2), true);
-		foreach ($birthday as $b) {
-			$eSoon[] = Array("type" => "event", "event" => $this->getEventData($b));
-		}
-		
-		
-		// all events ---------------------------------------
-		foreach ($this->events as $e) {	
-			$done = false;
-			$e['color'] = (!isset($e['color']) || $e['color'] == "") ? $this->standardCalendarColor: $e['color'];
-			
-			// events now ----------------------------------------------------------
-			if($e['start'] < $time && $e['end'] > $time) {
-				$eNow[] = Array("type" => "event", "event" => $this->getEventData($e));
-				$done = true;
-			}
-			
-			// events today ---------------------------------------------------------
-			if ((date("d.m.y", $e['start']) == date("d.m.y", $time ) || $e['start'] < $time && $e['end'] > $time)) {
-				$eToday[] = Array("type" => "event", "event" => $this->getEventData($e));
-				$done = true;
-			}			
-			
-			// events tomorrow --------------------------------------------------------
-			if ($e['origStart'] < $endOfTomorrow && $e['origEnd'] > $beginOfTomorrow) {
-				$eTomorrow[] = Array("type" => "event", "event" => $this->getEventData($e));
-				$done = true;
-			}				
-				
-			// events soon ------------------------------------------------------------
-			if (!$done) {
-				$eSoon[] = Array("type" => "event", "event" => $this->getEventData($e));
-			}				
-		}
-		
-		$return = array_merge($eNow,$eToday,$eTomorrow,$eSoon);
-		
-		return Array("events" => $return);
-	}
+    private $_allCalendars;
 
-	// ======== END INTERFACE METHODS =============================
-	
-	
-	/*
-	 * @param event with data from db
-	* @return html code for one event
-	*/
-	private function getEventData($e) {
-		$event = Array();
-		
-		// birthday
-		if ($e['calendar'] == "birthday") {
-			$event['type'] = "birthday";
-			$event['title'] = $e['title'];
-				
-			if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") {
-				$event['date'] = $this->getNiceDateTime($e['start'], "d.m.y", true, "");
-			} else {
-				$event['date'] = $this->getNiceDateTime($e['start'], "m-d-y", true, "");
-			}
-				
-			return $event;
-		}
-		// --------------------------------------------------------
-	
-		// no birthday, normal events
-		$event['title'] = $this->cleanSpecialCharacter($e['title']);
-		$event['color'] = $e['color'];
-		$event['calendar'] = $e['calendar'];
-	
-		$event['location'] = $this->cleanSpecialCharacter($this->getProperty('LOCATION', $e['data']));
-	
-		// all day event => one day (no time output, one date)
-		// start and end time = 00:00:00
-		// startday = endday-1
-		if(date("d.m.y H:i:s", $e['origStart']) == date("d.m.y H:i:s", $e['origEnd']-60*60*24) && date("H:i:s", $e['origStart']) == "00:00:00" && date("H:i:s", $e['origEnd']) == "00:00:00") {
-				
-			if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") {
-				$event['date'] = $this->getNiceDateTime($e['start'], "d.m.y", true, "");
-			} else {
-				$event['date'] = $this->getNiceDateTime($e['start'], "m-d-y", true, "");
-			}
-				
-			// all day event => takes more than one day (no time output)
-			// start and end time = 00:00:00
-			// end - start > one day
-		} elseif(date("H:i:s", $e['origStart']) == "00:00:00" && date("H:i:s", $e['origEnd']-60*60*24) == "00:00:00" && $e['origEnd']-$e['origStart'] > 60*60*24 ) {
-			// $e['end']-60*60*24 is for correct end day (end day before not at time 00:00:00)
-			if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") {
-				$event['date'] = $this->getNiceDateTime($e['start'], "d.m.y", true, "")." - ".$this->getNiceDateTime($e['end']-60*60*24, "d.m.y", true, "");
-			} else {
-				$event['date'] = $this->getNiceDateTime($e['start'], "m-d-y", true, "")." - ".$this->getNiceDateTime($e['end']-60*60*24, "m-d-y", true, "");
-			}
-	
-		// normal event => in one day (one date output)
-		} elseif(date("d.m.y", $e['start']) == date("d.m.y", $e['end'])) {
-	
-			if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") {
-				$event['date'] = $this->getNiceDateTime($e['start'], "d.m.y", true, "H:i")."Uhr - ".$this->getNiceDateTime($e['end'], "", false, "H:i").'Uhr';
-			} else {
-				$event['date'] = $this->getNiceDateTime($e['start'], "m-d-y", true, "H:i")." - ".$this->getNiceDateTime($e['end'], "", false, "H:i");
-			}
-				
-		// normal event => takes more than one day & all other (full output)
-		} else {
-	
-			if(OC_L10N::findLanguage() == "de" || OC_L10N::findLanguage() == "de_DE") {
-				$event['date'] = $this->getNiceDateTime($e['start'], "d.m.y", true, "H:i")."Uhr - ".$this->getNiceDateTime($e['end'], "d.m.y", true, "H:i").'Uhr';
-			} else {
-				$event['date'] = $this->getNiceDateTime($e['start'], "m-d-y", true, "H:i")." - ".$this->getNiceDateTime($e['end'], "m-d-y", true, "H:i");
-			}
-		}
-	
-		return $event;
-	}
-	
 
-	/*
-	 * @param $timestamp, looking for birthdays for this day
-	 * @return Array of all birthdays for day of timestamp
-	 */
-	private function getBirthdays($timestamp,$lookForward=false) {
-		$births = Array();
+    // ======== INTERFACE METHODS ================================
 
-		// look for birthdays in the next 14 days
-		if($lookForward) { 
-			for($i = 0; $i < 14; $i++) {
-				$newTimestamp = $timestamp+(24*60*60*$i);
-				$day = date("m-d",$newTimestamp);
-				$sql = "SELECT
-						value
-					FROM
-						`*PREFIX*contacts_cards_properties`
-					WHERE
-						contactid IN
-							(SELECT
-								contactid
-							FROM
-								`*PREFIX*contacts_cards_properties`
-							WHERE
-								value LIKE ? AND
-								name = ? AND
-								userid = ?
-							)
-					AND
-						name = 'FN'
-					;";
-			$params = Array("%".$day,"BDAY",$this->user);
-			$query = \OCP\DB::prepare($sql);
-				$result = $query->execute($params);
-				if (\OCP\DB::isError($result)) {
-					$this->errorMsg = "SQL Error";
-					\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
-				}
-					
-				while($row = $result->fetchRow()) {
-					$births[] = Array(
-							"diff" => "1",
-							"calendar" => "birthday",
-							"title" => $row['value'],
-							"color"	=> "",
-							"start" => $newTimestamp,
-							"end"	=> $newTimestamp+24*60*60,
-							"data"	=> ""
-					);
-				}
-			}			
-		} else {
-			// look for birthdays at the timestamp		
-			$day = date("m-d",$timestamp);
-			$sql = "SELECT
-					value
-				FROM
-					`*PREFIX*contacts_cards_properties`
-				WHERE
-					contactid IN
-						(SELECT
-							contactid
-						FROM
-							`*PREFIX*contacts_cards_properties`
-						WHERE
-							value LIKE ? AND
-							name = ? AND
-							userid = ?
-						)
-				AND
-					name = 'FN'
-				;";
-			$params = Array("%".$day,"BDAY",$this->user);
-			$query = \OCP\DB::prepare($sql);
-			$result = $query->execute($params);
-			if (\OCP\DB::isError($result)) {
-				$this->errorMsg = "SQL Error";
-				\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
-			}
-			
-			while($row = $result->fetchRow()) {
-				$births[] = Array(
-						"diff" => "1",
-						"calendar" => "birthday",
-						"title" => $row['value'],
-						"color"	=> "",
-						"start" => $timestamp,
-						"end"	=> $timestamp+24*60*60,
-						"data"	=> ""
-				);
-			}
-		}
-	
-		//print_r(Array($births,$sql));
-		
-		return $births;
-	}
-	
-	
-	/*
-	 * collect all events until limit
-	*/
-	private function prepareEvents() {
-		$sql = "SELECT 
-					DATEDIFF(obj.startdate, obj.enddate) as diff, 
-					cal.displayname as calendar, 
-					obj.summary as title, 
-					cal.calendarcolor as color, 
-					IF(obj.repeating=0,obj.startdate,rep.startdate) as eventStart, 
-					IF(repeating=0,obj.enddate,rep.enddate) as eventEnd,
-					obj.calendardata as data
-				FROM 
-					`*PREFIX*clndr_objects` obj 
-						LEFT JOIN 
-					`*PREFIX*clndr_repeat` rep ON obj.id = rep.eventid
-						JOIN
-					`*PREFIX*clndr_calendars` cal on cal.id = obj.calendarid
-				WHERE obj.objecttype = 'VEVENT' AND
-					userid = ?  AND 
-					(
-						DATE(obj.enddate) >= CURRENT_DATE
-					OR 
-						DATE(rep.enddate) >= CURRENT_DATE
-					)
-				ORDER BY
-					eventStart
-				LIMIT ".$this->numEvents;
-		$params = Array($this->user);
-		$query = \OCP\DB::prepare($sql);
-		$result = $query->execute($params);
-		if (\OCP\DB::isError($result)) {
-			$this->errorMsg = "SQL Error";
-			\OCP\Util::writeLog('ocDashboard', \OC_DB::getErrorMessage($result), \OC_Log::ERROR);
-		}
-	
-		while($row = $result->fetchRow()) {
-			// with timezone
-			$row['start'] = strtotime($row['eventStart'])+$this->timezoneAdd*60*60;
-			$row['end'] = strtotime($row['eventEnd'])+$this->timezoneAdd*60*60;
-			//withour timezone
-			$row['origStart'] = strtotime($row['eventStart']);
-			$row['origEnd'] = strtotime($row['eventEnd']);
-			$this->events[] = $row;
-		}
-	}
-	
-	
-	/*
-	 * return yesterday, today, tomorrow or date by formatting
-	 * 
-	 * @param $timestamp time to convert
-	 * @param $format format for date option formatting
-	 * @param $dayName boolean; praefix name of day, default false, add only if normal date
-	 * @param $timeFormat for adding time, by default none
-	 * @return nice date
-	 */
-	private function getNiceDateTime($timestamp, $dateFormat="", $dayName=false, $timeFormat="") {
-		$return = "";
-		$showTime = true;
-		
-		// add day name
-		$day = "";
-		if($dayName) {
-			$day = $this->l->t(date("D", $timestamp))." ";
-		}		
-		
-		// add date (or words)
-		if ($dateFormat != "") {
-			if( date($dateFormat,$timestamp) == date($dateFormat,time()-(24*60*60))) {
-				$return .= $this->l->t("Yesterday")." ";
-				$day = "";
-			} elseif( date($dateFormat,$timestamp) == date($dateFormat,time())) {
-				$return .= $this->l->t("Today")." ";
-				$return .= "";
-				$day = "";
-			} elseif( date($dateFormat,$timestamp) == date($dateFormat,time()+(24*60*60))) {
-				$return .= $this->l->t("Tomorrow")." ";
-				$day = "";
-			} else {
-				$return .= date($dateFormat, $timestamp)." ";
-			}
-		}
-		
-		// add time
-		if ($timeFormat != "" && $showTime) {
-			$return .= date($timeFormat,$timestamp)." ";
-		}
-		
-		return $day.$return;
-	}
-	
-	
-	/*
+    /*
+     * @return Array of all data for output
+     * this array will be routed to the subtemplate for this widget
+     */
+    public function getWidgetData() {
+        $this->loadCalendars();
+        $this->loadBirthdays();
+        $this->loadEvents();
+        $this->sortAllEvents();
+
+
+        $calendars = Array();
+        foreach ($this->_allCalendars as $cal) {
+            if( isset($cal['displaynamename']) ) {
+                $calendars[$cal['id']] = $cal['displaynamename'];
+            } else {
+                $calendars[$cal['id']] = $cal['displayname'];
+            }
+        }
+
+        /*
+        print_r(
+            Array(
+                'events'    => $this->_events,
+                'calendars' => $this->_allCalendars
+            )
+        );
+*/
+
+        return Array(
+            'events'        => $this->_events,
+            'calendars'     => $calendars
+        );
+    }
+
+    // ======== END INTERFACE METHODS =============================
+
+
+    /**
+     * sort all events
+     */
+    private function sortAllEvents() {
+        usort( $this->_events['now']['allDay'],       Array($this, 'sortEvents'));
+        usort( $this->_events['now']['events'],       Array($this, 'sortEvents'));
+        usort( $this->_events['today']['allDay'],     Array($this, 'sortEvents'));
+        usort( $this->_events['today']['events'],     Array($this, 'sortEvents'));
+        usort( $this->_events['tomorrow']['allDay'],  Array($this, 'sortEvents'));
+        usort( $this->_events['tomorrow']['events'],  Array($this, 'sortEvents'));
+        usort( $this->_events['soon']['allDay'],      Array($this, 'sortEvents'));
+        usort( $this->_events['soon']['events'],      Array($this, 'sortEvents'));
+    }
+
+    /**
+     * function for usort
+     * sort event objects
+     *
+     * @param $a
+     * @param $b
+     * @return int
+     */
+    private function sortEvents($a, $b) {
+        if( $a['startdate'] == $b['startdate'] ) {
+            return 0;
+        }
+
+        return ( $a['startdate'] < $b['startdate'] ) ? -1: 1;
+    }
+
+
+    /**
+     * loads all calendards
+     * inclusive shared calendars
+     */
+    private function loadCalendars()
+    {
+        $this->_allCalendars = \OC_Calendar_Calendar::allCalendars($this->user, true);
+    }
+
+
+    /**
+     * loads all birthdays for user and
+     * uses contact app
+     *
+     * @throws \Exception
+     */
+    private function loadBirthdays() {
+        $app = new ContactApp();
+        $addressBooks = $app->getAddressBooksForUser();
+        foreach($addressBooks as $addressBook) {
+            foreach($addressBook->getChildren() as $contact) {
+                $tmp    = $contact->getBirthdayEvent();
+                $first  = array_slice($tmp->select('VEVENT'), 0, 1);
+                $vevent = $first[0];
+
+                if(is_null($vevent)) {
+                    continue;
+                }
+
+                $start = $vevent->DTSTART;
+                /** @var $start \Sabre\VObject\Property\DateTime */
+                $startDateTime = $start->getDateTime();
+                /** @var $startDateTime \DateTime */
+
+                $end = \OC_Calendar_Object::getDTEndFromVEvent($vevent);
+                /** @var $end \Sabre\VObject\Property\DateTime */
+                $endDateTime = $end->getDateTime();
+                /** @var $endDateTime \DateTime */
+
+                $data = [
+                    'id'            => 0,
+                    'calendarid'    => 'contact_birthdays',
+                    'uri'           => $addressBook->getBackend()->name.'::'.$addressBook->getId().'::'.$contact->getId().'.ics',
+                    'lastmodified'  => $contact->lastModified(),
+                    'summary'       => $vevent->SUMMARY->value,
+                    'calendardata'  => $vevent->serialize(),
+                    'startdate'     => $startDateTime->format('Y-m-d H:i:s'),
+                    'enddate'       => $endDateTime->format('Y-m-d H:i:s')
+                ];
+                $this->addEventToGroup($data);
+            }
+        }
+    }
+
+
+    /**
+     * load all events from calendar app
+     */
+    private function loadEvents() {
+        $startOfToday = strtotime("midnight", time());
+        $startOfTodayObject = new \DateTime();
+        $startOfTodayObject->setTimestamp($startOfToday);
+        $endOfToday = strtotime("tomorrow", $startOfToday)-1;
+        $endOfToday = $endOfToday + (7*86400); // add 7 days
+        $endOfTodayObject = new \DateTime();
+        $endOfTodayObject->setTimestamp($endOfToday);
+
+        foreach( $this->_allCalendars as $calendar ) {
+            $events = \OC_Calendar_Object::allInPeriod($calendar['id'], $startOfTodayObject, $endOfTodayObject);
+            foreach( $events as $event ) {
+                $location = $this->getProperty('LOCATION', $event['calendardata']);
+                if( $location ) {
+                    $event['location'] = $location;
+                }
+                $this->addEventToGroup($event);
+            }
+        }
+    }
+
+
+    /**
+     * sort event to its group by date
+     *
+     * @param $vevent
+     */
+    private function addEventToGroup($vevent) {
+        $timeZoneCorrection = (int)Config::getUserValue($this->user, "ocDashboard", "ocDashboard_calendar_timezoneAdd",0);
+        $time = time() + ($timeZoneCorrection*60*60);
+
+        if ( strtotime($vevent['startdate']) <= $time && strtotime($vevent['enddate']) > $time && !$this->isAllDayEvent($vevent) ) {
+            $group = 'now';
+        } elseif (date('m-d') == date('m-d', strtotime($vevent['startdate']))) {
+            $group = 'today';
+        } elseif (date('m-d') == date('m-d', (strtotime($vevent['startdate'])-86399) )) {
+            $group = 'tomorrow';
+        } elseif (
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (2*86400) ) ||
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (3*86400) ) ||
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (4*86400) ) ||
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (5*86400) ) ||
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (6*86400) ) ||
+            date('m-d') == date('m-d', strtotime($vevent['startdate']) - (7*86400) )
+        ) {
+            $group = 'soon';
+        } else {
+            $group = '';
+        }
+
+        //echo $vevent['summary'].' '.strtotime($vevent['startdate']).' <br>'.$vevent['startdate'].' <br>'.$group.' <br>date(\'m-d\'):'.date('m-d').' <br>strtotime($vevent[\'startdate\']-86399 ):'.date('m-d', (strtotime($vevent['startdate'])-86399 )).'<br><br><br>';
+
+        if( $group ) {
+            if( $this->isAllDayEvent($vevent) ) {
+                $this->_events[$group]['allDay'][] = $vevent;
+            } else {
+                $this->_events[$group]['events'][] = $vevent;
+            }
+        }
+    }
+
+
+    /**
+     * @param vevent
+     * @return bool
+     */
+    private function isAllDayEvent($vevent) {
+        if( $vevent['calendarid'] == 'contact_birthdays' ) {
+            return true;
+        }
+
+        $start = strtotime($vevent['startdate']);
+        $end   = strtotime($vevent['enddate']);
+        $end = (isset($end) && $end != "") ? $end: $start+60*24*24;
+
+        if(
+            $start == ($end-60*60*24) &&
+            date("H:i:s", $start) == "00:00:00" &&
+            date("H:i:s", $end) == "00:00:00"
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    /**
+     * get property from "calendardata"
+     * (from serialized string)
+     *
 	 * @param propertyname
-	 * @param search string (seperated by "\n", property:value)
-	 * @return property value
+	 * @param search string (separated by "\n", property:value)
+	 * @return string property value
 	 */
-	private function getProperty($property, $searchstring) {
-		foreach (explode("\n", $searchstring) as $line) {
-			$parts = explode(":", $line);
-			if($parts[0] == $property) {
-				return $parts[1];
-			}
-		}
-		return "";
-	}
-	
+    private function getProperty($property, $searchstring) {
+        foreach (explode("\n", $searchstring) as $line) {
+            $parts = explode(":", $line);
+            if($parts[0] == $property) {
+                return $parts[1];
+            }
+        }
+        return "";
+    }
+
 }

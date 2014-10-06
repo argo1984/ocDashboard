@@ -1,0 +1,28 @@
+.app-ocDashboard .widget.calendar .content h1 {
+    padding-left:              0;
+    padding-top:            15px;
+    padding-bottom:          5px;
+    font-size:             1.2em;
+}
+
+.app-ocDashboard .widget.calendar .content .name {
+    padding-top:             3px;
+}
+.app-ocDashboard .widget.calendar .content .name span {
+    font-size:            0.85em;
+    white-space:          nowrap;
+}
+.app-ocDashboard .widget.calendar .content .name img {
+    padding-right:           2px;
+}
+
+.app-ocDashboard .widget.calendar .content .time {
+    font-size:            0.85em;
+    font-style:           italic;
+    margin-top:             -5px;
+}
+
+.app-ocDashboard .widget.calendar .content .location {
+    font-size:            0.9em;
+    margin-top:             -5px;
+}
