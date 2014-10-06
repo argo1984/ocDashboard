@@ -179,9 +179,12 @@ abstract class Widget {
 		$sql = 'SELECT * FROM `*PREFIX*ocDashboard_usedHashs` WHERE usedHash = ? AND widget = ? AND user = ? LIMIT 1;';
 		$params = Array($hash,$this->id,$this->user);
 		$query = DB::prepare($sql);
-        $resultNum = $query->execute($params)->rowCount();
 
-		// if not in DB, write to DB
+        $all = $query->execute($params)->fetchAll();
+        //var_dump($all);
+        $resultNum = count($all);
+
+        // if not in DB, write to DB
 		if( $resultNum == 0 ) {
 			$sql2 = 'INSERT INTO `*PREFIX*ocDashboard_usedHashs` (usedHash,widget,user,timestamp) VALUES (?,?,?,?); ';
 			$params = Array($hash,$this->id,$this->user,time());

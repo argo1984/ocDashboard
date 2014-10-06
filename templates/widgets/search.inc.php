@@ -1,4 +1,4 @@
-<table class="">
+<table>
     <tr>
         <td><input name ="keyword" class="keyword" type="text" size="30" /></td>
     </tr>

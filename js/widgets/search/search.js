@@ -23,10 +23,10 @@ urls[1] = [
 
 
 $(document).ready(function() {
-    $('#ocDashboard #search input[type="button"]').live("click",function(){
-        var engine = $('#ocDashboard #search select.engine').val();
-        var lang = $( "#ocDashboard #search input[name='lang']" ).val();
-        var keyword = $('#ocDashboard #search input[type="text"].keyword').val();
+    $('.app-ocDashboard .widget.search .content input[type="button"]').live("click",function(){
+        var engine  = $('.app-ocDashboard .widget.search .content select.engine').val();
+        var lang    = $('.app-ocDashboard .widget.search .content input[name="lang"]' ).val();
+        var keyword = $('.app-ocDashboard .widget.search .content input[type="text"].keyword').val();
 
         var url = urls[lang][engine] + keyword;
 

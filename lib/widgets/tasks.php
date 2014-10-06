@@ -101,7 +101,7 @@ class tasks extends Widget implements interfaceWidget {
      * @param array with values for the DIContainer
      * @return TasksController
      */
-    private function getTasksController($params = null) {
+    private function getTasksController($params = Array()) {
         $taskApp = new TaskApp($params);
         $taskContainer = $taskApp->getContainer();
         /** @var  $tasksController TasksController */
